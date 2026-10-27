@@ -45,11 +45,11 @@ function Invoices() {
                 <td className="p-3 font-mono font-semibold">{i.invoiceNo}</td>
                 <td className="whitespace-nowrap p-3 text-slate-600">{formatDay(i.issuedAt)}</td>
                 <td className="p-3 font-semibold">{i.customerName}</td>
-                <td className="p-3"><Link href={`/admin/tickets/${i.ticketId}`} className="font-mono underline-offset-2 hover:underline">#{i.ticketNo}</Link></td>
+                <td className="p-3"><Link href={`/admin/tickets/view?id=${i.ticketId}`} className="font-mono underline-offset-2 hover:underline">#{i.ticketNo}</Link></td>
                 <td className="p-3 font-mono text-xs">{i.quotationNo ?? '—'}</td>
                 <td className="p-3 text-slate-600">{i.issuedBy ?? '—'}</td>
                 <td className="p-3 text-right font-semibold tabular-nums">{formatINR(i.totalPaise)}</td>
-                <td className="p-3 text-right"><Link href={`/admin/invoices/${i.id}`} className="font-semibold text-slate-700 underline-offset-2 hover:underline">Open / print</Link></td>
+                <td className="p-3 text-right"><Link href={`/admin/invoices/view?id=${i.id}`} className="font-semibold text-slate-700 underline-offset-2 hover:underline">Open / print</Link></td>
               </tr>
             ))}
           </tbody>

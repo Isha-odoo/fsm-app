@@ -226,7 +226,7 @@ function Reports() {
                       )}
                       {g.rows.map((t) => (
                         <tr key={t.id} className="border-t border-slate-100 hover:bg-slate-50">
-                          <td className="p-3 font-mono font-semibold"><Link href={`/admin/tickets/${t.id}`} className="underline-offset-2 hover:underline">#{t.ticketNo}</Link></td>
+                          <td className="p-3 font-mono font-semibold"><Link href={`/admin/tickets/view?id=${t.id}`} className="underline-offset-2 hover:underline">#{t.ticketNo}</Link></td>
                           <td className="whitespace-nowrap p-3 text-slate-600">{formatWhen(t.createdAt)}</td>
                           <td className="p-3"><div className="font-semibold">{t.customerName}</div>{t.phone && <div className="text-xs text-slate-500">{t.phone}</div>}</td>
                           <td className="p-3">{t.model ?? '—'}{t.serialNumber && <div className="font-mono text-xs text-slate-500">{t.serialNumber}</div>}</td>

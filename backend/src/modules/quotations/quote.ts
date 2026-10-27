@@ -63,5 +63,5 @@ export async function createShareLink(db: Db, quotationId: string): Promise<stri
     `INSERT INTO quotation_share_links (quotation_id, token_hash, expires_at) VALUES ($1, $2, now() + interval '60 days')`,
     [quotationId, sha256(token)],
   );
-  return `${config.PUBLIC_URL.replace(/\/$/, '')}/q/${token}`;
+  return `${config.PUBLIC_URL.replace(/\/$/, '')}/q/?t=${token}`;
 }

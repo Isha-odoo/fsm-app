@@ -6,6 +6,7 @@ types.setTypeParser(1082, (v: string) => v);
 
 export const pool = new Pool({
   connectionString: config.DATABASE_URL,
+  ssl: config.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
   max: 10,
   idleTimeoutMillis: 30_000,
 });

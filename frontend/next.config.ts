@@ -6,10 +6,14 @@ const exporting = process.env.STATIC_EXPORT === "1";
 
 const nextConfig: NextConfig = {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 122f624 (Update FSM project from Claude)
   ...(exporting ? { output: "export" as const, trailingSlash: true } : {}),
   // Cache Components / partial prefetching are not available in static export mode.
   cacheComponents: !exporting,
   partialPrefetching: !exporting,
+<<<<<<< HEAD
 =======
   output: 'export',
   images: {
@@ -19,6 +23,8 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
 >>>>>>> origin/main
+=======
+>>>>>>> 122f624 (Update FSM project from Claude)
   turbopack: {
     rules: {
       "*.css": {

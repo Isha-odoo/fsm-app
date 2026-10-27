@@ -108,7 +108,7 @@ export interface SolveResult {
   ticketNo: number;
   warranty: Warranty | null;
   quotation: { id: string; quotationNo: string; totalPaise: number };
-  shareUrl: string;            // link for the customer: /q/<token>
+  shareUrl: string;            // link for the customer: /q/?t=<token>
 }
 
 // ───────── public customer form ─────────

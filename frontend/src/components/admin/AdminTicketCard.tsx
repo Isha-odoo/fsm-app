@@ -15,12 +15,12 @@ export function AdminTicketCard({ ticket: t, children }: { ticket: Ticket; child
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-x-2 text-xs text-slate-500">
-            <Link href={`/admin/tickets/${t.id}`} className="font-mono font-semibold text-slate-700 underline-offset-2 hover:underline">#{t.ticketNo}</Link>
+            <Link href={`/admin/tickets/view?id=${t.id}`} className="font-mono font-semibold text-slate-700 underline-offset-2 hover:underline">#{t.ticketNo}</Link>
             <span>{timeAgo(t.createdAt)}</span>
             {t.priority === 1 && <span className="font-semibold text-red-600">{PRIORITY_LABEL[1]}</span>}
             {t.source === 'CUSTOMER' && <span className="inline-flex items-center gap-1"><Globe className="h-3 w-3" /> Web form</span>}
           </div>
-          <h3 className="mt-0.5 truncate text-base font-bold"><Link href={`/admin/tickets/${t.id}`} className="hover:underline">{t.customerName}</Link></h3>
+          <h3 className="mt-0.5 truncate text-base font-bold"><Link href={`/admin/tickets/view?id=${t.id}`} className="hover:underline">{t.customerName}</Link></h3>
         </div>
         <TicketStatusChip status={t.status} />
       </div>

@@ -54,7 +54,7 @@ export function InvoiceModal({ ticketId, onClose }: { ticketId: string; onClose:
             <div className="font-mono text-xl font-bold">{done.invoice.invoiceNo}</div>
             <div className="text-slate-700">Total {formatINR(done.totalPaise)} (incl. GST)</div>
             <div className="flex flex-wrap justify-center gap-2">
-              <Link href={`/admin/invoices/${done.invoice.id}`} className="rounded-xl bg-emerald-600 px-6 py-2.5 font-bold text-white hover:bg-emerald-700">Open &amp; print invoice</Link>
+              <Link href={`/admin/invoices/view?id=${done.invoice.id}`} className="rounded-xl bg-emerald-600 px-6 py-2.5 font-bold text-white hover:bg-emerald-700">Open &amp; print invoice</Link>
               <button onClick={onClose} className="rounded-xl border border-slate-300 bg-white px-6 py-2.5 font-semibold hover:bg-slate-50">Done</button>
             </div>
           </div>
@@ -63,12 +63,12 @@ export function InvoiceModal({ ticketId, onClose }: { ticketId: string; onClose:
         {t && !done && (
           <>
             {t.invoice && (
-              <p className="mt-4 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-900">Already invoiced as <span className="font-mono font-semibold">{t.invoice.invoiceNo}</span> ({formatINR(t.invoice.totalPaise)}). <Link href={`/admin/invoices/${t.invoice.id}`} className="font-semibold underline">Open &amp; print</Link></p>
+              <p className="mt-4 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-900">Already invoiced as <span className="font-mono font-semibold">{t.invoice.invoiceNo}</span> ({formatINR(t.invoice.totalPaise)}). <Link href={`/admin/invoices/view?id=${t.invoice.id}`} className="font-semibold underline">Open &amp; print</Link></p>
             )}
 
             <div className="mt-4 grid gap-3 rounded-xl bg-slate-50 p-3 text-sm sm:grid-cols-2">
               <div><div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Warranty at visit</div><div className="mt-1"><WarrantyChip status={t.warrantyStatus} /></div></div>
-              {t.quotation && <div><div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Customer quotation</div><div className="mt-1"><Link href={`/admin/quotations/${t.quotation.id}`} className="font-mono underline-offset-2 hover:underline">{t.quotation.quotationNo}</Link> · {formatINR(t.quotation.totalPaise)}</div></div>}
+              {t.quotation && <div><div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Customer quotation</div><div className="mt-1"><Link href={`/admin/quotations/view?id=${t.quotation.id}`} className="font-mono underline-offset-2 hover:underline">{t.quotation.quotationNo}</Link> · {formatINR(t.quotation.totalPaise)}</div></div>}
               <div><div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Solved by</div><div className="mt-1">{t.technicianName ?? '—'} · {formatWhen(t.solvedAt)}</div></div>
               {t.workDone && <div className="sm:col-span-2"><div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Solution</div><p className="mt-1">{t.workDone}</p></div>}
             </div>

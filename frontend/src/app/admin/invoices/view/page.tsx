@@ -1,15 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
+import { useIdParam } from '@/lib/useIdParam';
 import { ClientOnly } from '@/components/ClientOnly';
 import { DocToolbar } from '@/components/admin/DocToolbar';
 import { DocumentView } from '@/components/DocumentView';
 
 function InvoiceDoc() {
-  const { id } = useParams<{ id: string }>();
+  const id = useIdParam();
   const q = useQuery({ queryKey: ['admin', 'invoice', id], queryFn: () => api.getInvoice(id) });
 
   if (q.isLoading) return <div className="p-6"><div className="h-96 animate-pulse rounded-2xl bg-slate-200" /></div>;
@@ -19,7 +19,7 @@ function InvoiceDoc() {
   return (
     <main className="p-4 md:p-6 print:p-0">
       <DocToolbar backHref="/admin/invoices" backLabel="All invoices">
-        {doc.ticket.id && <Link href={`/admin/tickets/${doc.ticket.id}`} className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Open ticket #{doc.ticket.ticketNo}</Link>}
+        {doc.ticket.id && <Link href={`/admin/tickets/view?id=${doc.ticket.id}`} className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Open ticket #{doc.ticket.ticketNo}</Link>}
       </DocToolbar>
       <DocumentView doc={doc} />
     </main>

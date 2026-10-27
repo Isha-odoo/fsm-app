@@ -10,6 +10,8 @@ const schema = z.object({
   NODE_ENV: z.string().default('development'),
   // GST state code of the seller (24 = Gujarat). Same state as the customer site => CGST+SGST, otherwise IGST.
   SELLER_STATE_CODE: z.string().regex(/^\d{2}$/).default('24'),
+  // Managed Postgres (Supabase, Render external URL...) needs TLS. Set DATABASE_SSL=true there; do not add ?sslmode= to the URL.
+  DATABASE_SSL: z.enum(['true', 'false']).default('false'),
   // Printed on quotations and invoices. Set your real details in backend/.env.
   COMPANY_NAME: z.string().default('Bhawani Print & Pack'),
   COMPANY_ADDRESS: z.string().default(''),

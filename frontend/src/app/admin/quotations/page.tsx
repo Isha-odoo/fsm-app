@@ -51,15 +51,15 @@ function Quotations() {
             {list.isSuccess && rows.length === 0 && <tr><td colSpan={9} className="p-8 text-center text-slate-500">No quotations yet.</td></tr>}
             {rows.map((r) => (
               <tr key={r.id} className="border-t border-slate-100 hover:bg-slate-50">
-                <td className="p-3"><Link href={`/admin/quotations/${r.id}`} className="font-mono font-semibold underline-offset-2 hover:underline">{r.quotationNo}</Link></td>
+                <td className="p-3"><Link href={`/admin/quotations/view?id=${r.id}`} className="font-mono font-semibold underline-offset-2 hover:underline">{r.quotationNo}</Link></td>
                 <td className="whitespace-nowrap p-3 text-slate-600">{formatDay(r.createdAt)}</td>
                 <td className="p-3 font-semibold">{r.customerName}</td>
                 <td className="p-3">{r.product ?? '—'}</td>
-                <td className="p-3"><Link href={`/admin/tickets/${r.ticketId}`} className="font-mono underline-offset-2 hover:underline">#{r.ticketNo}</Link></td>
+                <td className="p-3"><Link href={`/admin/tickets/view?id=${r.ticketId}`} className="font-mono underline-offset-2 hover:underline">#{r.ticketNo}</Link></td>
                 <td className="p-3 text-slate-600">{r.technicianName ?? '—'}</td>
                 <td className="p-3"><QuoteStatusChip status={r.status} /></td>
                 <td className="p-3 text-right font-semibold tabular-nums">{r.totalPaise === 0 ? 'No charge' : formatINR(r.totalPaise)}</td>
-                <td className="p-3">{r.invoiceId ? <Link href={`/admin/invoices/${r.invoiceId}`} className="font-mono text-xs underline-offset-2 hover:underline">{r.invoiceNo}</Link> : <span className="text-slate-400">Not invoiced</span>}</td>
+                <td className="p-3">{r.invoiceId ? <Link href={`/admin/invoices/view?id=${r.invoiceId}`} className="font-mono text-xs underline-offset-2 hover:underline">{r.invoiceNo}</Link> : <span className="text-slate-400">Not invoiced</span>}</td>
               </tr>
             ))}
           </tbody>

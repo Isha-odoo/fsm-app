@@ -5,6 +5,7 @@ import { Providers } from './providers';
 export const metadata: Metadata = {
   title: 'Bhawani FSM',
   description: 'Field service management for Bhawani Print and Pack',
+  manifest: '/manifest.webmanifest',
   icons: { icon: '/icons/icon-192.png', apple: '/icons/icon-192.png' },
   appleWebApp: { capable: true, title: 'Bhawani FSM', statusBarStyle: 'black-translucent' },
 };

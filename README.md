@@ -19,7 +19,7 @@ Everybody signs in at `/login` with their own account and lands in their own win
 fsm/
 ├── frontend/          Next.js + Tailwind: technician app, admin dashboard, customer form
 ├── backend/           Node.js + Express + TypeScript API
-├── db/                001_schema.sql, 002, 003_tickets, 004_inventory_reporting, 005_quotation_flow (PostgreSQL)
+├── db/                001_schema.sql, 002, 003_tickets, 004_inventory_reporting, 005_quotation_flow, 006_supabase_lockdown (PostgreSQL)
 ├── docker-compose.yml PostgreSQL for local development
 └── ARCHITECTURE.md    Design, API list, UI layout, security notes
 ```
@@ -112,14 +112,41 @@ Cancel on a *New* ticket removes spam or duplicates (reason is audit-logged).
 
 The API enforces these rules on every request; hiding menu items is only a convenience.
 
+### Deploy: Render (API + web) and Supabase (database)
+
+**Supabase (database)**
+1. Create a project. In *Project Settings > Database > Connection string* copy the **Session pooler** URI (it works over IPv4, which Render needs). It looks like `postgresql://postgres.<ref>:[PASSWORD]@aws-0-<region>.pooler.supabase.com:5432/postgres`.
+2. From your laptop apply the migrations in order with `psql "<that URI>" -v ON_ERROR_STOP=1 -f db/001_schema.sql` ... through `db/006_supabase_lockdown.sql` (use `psql`, not the SQL editor: `003` must run outside a transaction). `006` turns on Row Level Security so nobody can reach your tables through Supabase's public REST API with the anon key; the API itself is unaffected.
+3. Create the first administrator (this does not add the demo data): `cd backend && DATABASE_URL="<that URI>" DATABASE_SSL=true ADMIN_EMAIL=you@company.com ADMIN_PASSWORD='a-long-password' ADMIN_NAME='Your Name' npm run create-admin`. Then add everyone else, products, services and parts in the app. Do not run `npm run seed` in production: it creates demo accounts with a known password.
+
+**Render: API (Web Service)** from this GitHub repo
+- Root Directory `backend`, Build `npm install --include=dev && npm run build`, Start `npm start`, Health Check Path `/health`.
+- Environment: `NODE_VERSION=22`, `DATABASE_URL=<the Supabase URI>`, `DATABASE_SSL=true` (do not add `?sslmode=` to the URL), `JWT_SECRET=<long random string>`, `CORS_ORIGIN=<your web app URL>`, `PUBLIC_URL=<your web app URL>`, `TRUST_PROXY=1`, `SELLER_STATE_CODE=24`, and `COMPANY_NAME`, `COMPANY_ADDRESS`, `COMPANY_GSTIN`, `COMPANY_PHONE`, `COMPANY_EMAIL`.
+- A free Render web service sleeps after 15 idle minutes and takes ~30 s to wake. Use a paid instance for technicians in the field.
+
+**Render: web app (Static Site)** from the same repo
+- Root Directory `frontend`, Build `npm install && npm run build:static`, Publish Directory `out`.
+- Environment: `NODE_VERSION=22`, `NEXT_PUBLIC_API_URL=https://<your-api>.onrender.com/api`. This value is baked in at build time, so after changing it use *Clear build cache & deploy*.
+- The whole web app is static files (every page loads its data from the API), so no Node server is needed for it.
+
+Order: create the API first, then the static site with the API URL, then put the static site URL into the API's `CORS_ORIGIN` and `PUBLIC_URL` and redeploy the API. Test at `https://<your-web-app>/login`, and `https://<your-api>/health` should say `{"ok":true}`.
+
 ### Turning the technician app into an APK
 
-The technician screens are already a mobile-first web app and installable as one: `manifest.webmanifest` and icons are in place, so on Android Chrome you can **Add to home screen** today. To publish a real APK or Play Store app later, there are two routes, neither needs a rewrite:
+The static build (`npm run build:static` in `frontend`, output in `out/`) is exactly what Capacitor wraps, so the APK needs no separate code:
 
-1. **Trusted Web Activity (simplest).** Host the app on HTTPS, then run Google's Bubblewrap (`npx @bubblewrap/cli init --manifest https://your-domain/manifest.webmanifest`, then `build`). You get an APK/AAB that opens your site full screen. It needs a `/.well-known/assetlinks.json` file on your domain.
-2. **Capacitor (if you want native features).** `npm i @capacitor/core @capacitor/cli @capacitor/android`, `npx cap init`, and point `server.url` at the hosted app. Add plugins later for background GPS, camera (photos of the repair) and push notifications.
+```bash
+cd frontend
+npm i @capacitor/core @capacitor/android && npm i -D @capacitor/cli
+NEXT_PUBLIC_API_URL=https://<your-api>.onrender.com/api npm run build:static
+npx cap init "Bhawani FSM" com.bhawani.fsm --web-dir out      # once
+npx cap add android                                          # once
+npx cap sync android && npx cap open android                 # Android Studio: Build > Build APK
+```
 
-Either way: serve the API over **HTTPS**, set `NEXT_PUBLIC_API_URL` to its public address, and add the app's origin to `CORS_ORIGIN` in `backend/.env` (for Capacitor that is `https://localhost`). Technician sign-in already works the same in a phone browser, so the APK needs no separate login system.
+Add `https://localhost,capacitor://localhost` to the API's `CORS_ORIGIN` (comma separated, together with your web app URL). Alternatively set `server.url` in `capacitor.config.ts` to your static site URL: then the APK always shows the latest deployed version without rebuilding. The customer's quotation link still opens in a normal browser at `PUBLIC_URL`.
+
+Pages that need an id use query strings (`/visits/detail?id=...`, `/admin/tickets/view?id=...`, `/q/?t=...`) instead of `/[id]` paths, so the app can be exported as static files.
 
 ---
 
@@ -131,7 +158,7 @@ That is the API (port 4000, or whatever `PORT` you set), which has no web pages;
 
 ## What is and is not included
 
-Included: public customer form (product, service, serial; rate-limited, honeypot, double-submit safe), per-employee logins with Administrator / Dispatcher / Technician roles and an Employees screen, dispatch board that records who assigned each ticket, technician app showing only their own tickets, server-side warranty check, parts logging with automatic stock deduction, inventory (products, services, parts, consumables, stock ledger, low-stock alerts), technicians create warranty-aware quotations on site and share them with the customer (public link with approve / decline), admin invoicing from the quotation with CGST/SGST/IGST and gapless numbering per financial year, printable A4 quotation and tax invoice (with amount in words), Odoo-style ticket view with full history, quotation and invoice lists, filterable reports (day, customer, employee, product, service, status, group-by, CSV), audit log, installable web app, unit tests (`cd backend && npm test`).
+Included: public customer form (product, service, serial; rate-limited, honeypot, double-submit safe), per-employee logins with Administrator / Dispatcher / Technician roles and an Employees screen, dispatch board that records who assigned each ticket, technician app showing only their own tickets, server-side warranty check, parts logging with automatic stock deduction, inventory (products, services, parts, consumables, stock ledger, low-stock alerts), technicians create warranty-aware quotations on site and share them with the customer (public link `/q/?t=...` with approve / decline), admin invoicing from the quotation with CGST/SGST/IGST and gapless numbering per financial year, printable A4 quotation and tax invoice (with amount in words), Odoo-style ticket view with full history, quotation and invoice lists, filterable reports (day, customer, employee, product, service, status, group-by, CSV), audit log, installable web app, unit tests (`cd backend && npm test`).
 
 Behaviour worth knowing:
 - A customer's serial is matched exactly (case-insensitive) to a machine on file. On a match the ticket uses that machine's customer, site and warranty. On no match a customer is found by phone number (or created) and the admin sees a "Serial not recognised" badge. The technician then gets no warranty record and the office verifies it.

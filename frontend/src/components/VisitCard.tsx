@@ -10,7 +10,7 @@ export function VisitCard({ visit }: { visit: Visit }) {
   const done = visit.status === 'COMPLETED';
   return (
     <Link
-      href={`/visits/${visit.id}`}
+      href={`/visits/detail?id=${visit.id}`}
       className={`relative block overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 pl-5 shadow-sm active:bg-slate-50 ${done ? 'opacity-70' : ''}`}
     >
       <span className={`absolute inset-y-0 left-0 w-1.5 ${PRIORITY_BAR[visit.priority]}`} aria-hidden />

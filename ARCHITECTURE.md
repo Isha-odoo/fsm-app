@@ -9,7 +9,7 @@ Customer form (public) -> Ticket NEW -> Admin assigns technician -> Technician c
 - **Ticket = `service_jobs` row** (`job_no` is the ticket number). Status: `NEW`, `ASSIGNED`, `IN_PROGRESS`, `SOLVED`, `CANCELLED`. "Invoiced" is derived from the invoice that links to the solving visit.
 - **Assigning** creates the technician's `visits` row (re-assignable until check-in). A partial unique index allows only one open visit per ticket.
 - **Solving + quotation** (`POST /visits/:id/solve`, idempotent): the technician sends the solution and the items used (parts, consumables, services). The server prices them from the catalog, decides warranty-waived lines from the machine's warranty, stores them in `visit_parts` with their GST rate, snapshots the warranty on the visit, deducts stock for physical items, and creates the `quotations` row (number `BPP-QT-…`, frozen totals, status SHARED) plus a customer share link. `POST /visits/:id/solve/preview` gives the same pricing live, without saving. Technicians cannot override warranty.
-- **Customer's copy** (`/q/<token>`, public): the token is random, only its SHA-256 is stored (`quotation_share_links`), links expire after 60 days. The customer can print it and approve or decline (`quotations.status`, rate-limited). Staff can also record the answer.
+- **Customer's copy** (`/q/?t=<token>`, public): the token is random, only its SHA-256 is stored (`quotation_share_links`), links expire after 60 days. The customer can print it and approve or decline (`quotations.status`, rate-limited). Staff can also record the answer.
 - **Invoicing** (`POST /invoices`, admin only) builds lines from the same `visit_parts` (the rates and prices the customer saw) plus optional extra catalog services the admin adds, links the quotation (`invoices.quotation_id`), applies GST per line (CGST+SGST for the seller's state, else IGST), numbers it `BPP/<FY>/<6 digits>` from `invoice_counters` inside the same transaction. One invoice per visit.
 - **Public intake** (`POST /api/public/tickets`, no login): zod validation, 10 requests/hour/IP, honeypot field, `Idempotency-Key`. Serial matches a machine => ticket inherits its customer, site and warranty; otherwise the customer is found/created by phone and the typed serial is kept for the admin to verify. The response only contains the ticket number.
 - **Reports**: views `v_technician_stats` (active tickets, visits = check-ins, solved) and `v_customer_ticket_stats` (raised, solved, open).
@@ -30,7 +30,7 @@ Customer form (public) -> Ticket NEW -> Admin assigns technician -> Technician c
 | `POST /invoices/preview`, `POST /invoices` | admin |
 | `GET /visits/me`, `GET /visits/:id`, `GET /visits/:id/warranty`, `POST /visits/:id/check-in`, `POST /visits/:id/solve` | technician (own visits only) |
 
-Frontend routes: `/request` (public), `/login`, `/admin/dispatch`, `/admin/reports`, `/admin/inventory`, `/admin/employees`, `/admin/quotations[/:id]`, `/admin/invoices[/:id]`, `/admin/tickets/:id`, `/q/:token` (customer), `/` and `/visits/:id[/solve]` (technician).
+Frontend routes: `/request` (public), `/login`, `/admin/dispatch`, `/admin/reports`, `/admin/inventory`, `/admin/employees`, `/admin/quotations[/view?id=]`, `/admin/invoices[/view?id=]`, `/admin/tickets/view?id=`, `/q/?t=<token>` (customer), `/` and `/visits/detail?id=` and `/visits/solve?id=` (technician).
 
 **Roles and employees.** `users.role` is ADMIN, DISPATCHER or TECHNICIAN. Admins create and disable logins (`/api/users`); you cannot demote or disable yourself, or disable a technician who still has open tickets. Technician endpoints are filtered by the signed-in user's id (another technician's visit returns 404).
 
@@ -162,3 +162,6 @@ Relationships: customer 1–N sites, 1–N assets; asset 1–N jobs; job 1–N v
 4. Search and CRM metrics, recurring-issue reports
 5. Live tracking map and history
 6. Reports, reminders for expiring warranties, payment gateway
+
+
+**Hosting.** The web app is a fully static export (every page fetches its data from the API), served from a Render Static Site and wrapped by Capacitor for Android. The API runs as a Render Web Service against Supabase Postgres (TLS via `DATABASE_SSL=true`, Row Level Security on every table via migration 006, the API connects as the table owner and is unaffected).
