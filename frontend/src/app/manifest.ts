@@ -1,5 +1,7 @@
 import type { MetadataRoute } from 'next';
 
+export const dynamic = 'force-static';
+
 /** Makes the web app installable on a phone ("Add to home screen") and is what an Android wrapper (APK) builds on. */
 export default function manifest(): MetadataRoute.Manifest {
   return {

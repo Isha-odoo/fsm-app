@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Bhawani FSM</string>
+    <string name="title_activity_main">Bhawani FSM</string>
+    <string name="package_name">com.bhawani.fsm</string>
+    <string name="custom_url_scheme">com.bhawani.fsm</string>
+</resources>
