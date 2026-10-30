@@ -22,6 +22,7 @@ Customer form (public) -> Ticket NEW -> Admin assigns technician -> Technician c
 | `GET /inventory/items` | admin, dispatcher |
 | `POST /inventory/items`, `PATCH /inventory/items/:id`, `POST /inventory/items/:id/stock` | admin |
 | `GET /users`, `POST /users`, `PATCH /users/:id` | admin |
+| `POST /auth/change-password` | any signed-in user (own password) |
 | `GET /public/catalog`, `GET /public/quotations/:token`, `POST /public/quotations/:token/decision` | public |
 | `GET /quotations`, `POST /quotations/:id/decision` | admin, dispatcher |
 | `GET /quotations/:id`, `POST /quotations/:id/share-link` | admin, dispatcher, the technician who made it |

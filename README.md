@@ -144,11 +144,19 @@ npx cap add android                                          # once
 npx cap sync android && npx cap open android                 # Android Studio: Build > Build APK
 ```
 
-Add `https://localhost,capacitor://localhost` to the API's `CORS_ORIGIN` (comma separated, together with your web app URL). Alternatively set `server.url` in `capacitor.config.ts` to your static site URL: then the APK always shows the latest deployed version without rebuilding. The customer's quotation link still opens in a normal browser at `PUBLIC_URL`.
+**Use `npm run build:static`, not `npm run build`**: only the static build writes the `out/` folder that Capacitor copies. After every UI change repeat all of: `rm -rf .next out && npm run build:static`, `npx cap sync android`, `cd android && ./gradlew clean assembleDebug`. The APK is `android/app/build/outputs/apk/debug/app-debug.apk`. Add `https://localhost,capacitor://localhost` to the API's `CORS_ORIGIN` (comma separated, together with your web app URL). Alternatively set `server.url` in `capacitor.config.ts` to your static site URL: then the APK always shows the latest deployed version without rebuilding. The customer's quotation link still opens in a normal browser at `PUBLIC_URL`.
 
 Pages that need an id use query strings (`/visits/detail?id=...`, `/admin/tickets/view?id=...`, `/q/?t=...`) instead of `/[id]` paths, so the app can be exported as static files.
 
 ---
+
+## Passwords
+
+- **Change your own password:** technicians open **Profile > Change password**; administrators and dispatchers use **Change password** in the sidebar (the menu button on a phone). You must know your current password.
+- **Reset someone else's:** an administrator opens **Admin > Employees**, clicks **Edit** on the person and enters a new password (there is a Generate button).
+- **Locked out of the only admin account:** run this from your own computer in `backend`, with `DATABASE_URL` (and `DATABASE_SSL=true` for Supabase) in `backend/.env`:
+  `EMAIL=you@company.com NEW_PASSWORD='a long new password' npm run reset-password`
+- The demo password `ChangeMe123!` exists only if you ran `npm run seed`. Accounts made with `create-admin` have the password you gave it.
 
 ## Design system
 

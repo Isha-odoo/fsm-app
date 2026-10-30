@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useSyncExternalStore } from 'react';
-import { ChevronRight, ClipboardList, LogOut, Mail, ShieldCheck } from 'lucide-react';
+import { useState, useSyncExternalStore } from 'react';
+import { ChevronRight, ClipboardList, KeyRound, LogOut, Mail, ShieldCheck } from 'lucide-react';
 import { session } from '@/lib/api';
 import { ClientOnly } from '@/components/ClientOnly';
 import { AppBar } from '@/components/ui/AppBar';
+import { ChangePasswordSheet } from '@/components/ui/ChangePasswordSheet';
 import { Avatar } from '@/components/ui/Avatar';
 import { IconTile, Section, Skeleton, cardCls } from '@/components/ui/parts';
 
@@ -18,6 +19,7 @@ function Profile() {
   const name = useSyncExternalStore(subscribe, () => session.name() ?? '', () => '');
   const email = useSyncExternalStore(subscribe, () => session.email() ?? '', () => '');
   const role = useSyncExternalStore(subscribe, () => session.role() ?? '', () => '');
+  const [changing, setChanging] = useState(false);
 
   return (
     <main className="pb-28">
@@ -43,13 +45,18 @@ function Profile() {
             <IconTile tone="blue" size={40}><ClipboardList className="h-5 w-5" /></IconTile>
             <span className="flex-1 font-medium">My Tickets</span><ChevronRight className="h-5 w-5 text-muted" />
           </Link>
+          <button onClick={() => setChanging(true)} className="flex min-h-14 w-full items-center gap-3 border-t border-line px-4 text-left active:bg-canvas">
+            <IconTile tone="blue" size={40}><KeyRound className="h-5 w-5" /></IconTile>
+            <span className="flex-1 font-medium">Change password</span><ChevronRight className="h-5 w-5 text-muted" />
+          </button>
         </div>
 
         <button onClick={() => { session.clear(); router.replace('/login'); }}
           className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-white text-base font-semibold text-red-600 active:bg-red-50">
           <LogOut className="h-5 w-5" /> Logout
         </button>
-        <p className="text-center text-xs text-muted">Need to change your password or details? Ask your administrator.</p>
+        <p className="text-center text-xs text-muted">Forgot your password? Ask your administrator to reset it.</p>
+        {changing && <ChangePasswordSheet onClose={() => setChanging(false)} />}
       </div>
     </main>
   );

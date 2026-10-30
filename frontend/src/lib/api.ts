@@ -74,6 +74,8 @@ export const api = {
   login: (email: string, password: string): Promise<{ token: string; user: { id: string; name: string; role: string } }> =>
     post('/auth/login', { email, password }),
 
+  changePassword: (currentPassword: string, newPassword: string): Promise<{ ok: boolean }> => post('/auth/change-password', { currentPassword, newPassword }),
+
   // ───────── technician ─────────
   getMyVisits: (date: string = todayIST()): Promise<Visit[]> => http(`/visits/me${qs({ date })}`),
   getVisit: (id: string): Promise<Visit> => http(`/visits/${id}`),

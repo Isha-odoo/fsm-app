@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.bhawani.fsm',
-  appName: 'Bhawani FSM',
+  appName: 'ISX FSM',
   webDir: 'out'
 };
 

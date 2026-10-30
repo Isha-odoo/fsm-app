@@ -3,9 +3,10 @@
 import { Suspense, useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { BarChart3, Boxes, Check, Copy, ExternalLink, FileText, LayoutGrid, LogOut, Menu, Receipt, UsersRound, X, type LucideIcon } from 'lucide-react';
+import { BarChart3, Boxes, Check, Copy, ExternalLink, FileText, KeyRound, LayoutGrid, LogOut, Menu, Receipt, UsersRound, X, type LucideIcon } from 'lucide-react';
 import { session } from '@/lib/api';
 import { Avatar } from '@/components/ui/Avatar';
+import { ChangePasswordSheet } from '@/components/ui/ChangePasswordSheet';
 import { Logo } from '@/components/ui/Logo';
 
 type Role = 'ADMIN' | 'DISPATCHER';
@@ -52,7 +53,7 @@ function NavLinks({ role, onNavigate }: { role: Role; onNavigate?: () => void })
 }
 
 /** Menu content shared by the desktop sidebar and the mobile drawer. */
-function MenuContent({ role, onNavigate }: { role: Role; onNavigate?: () => void }) {
+function MenuContent({ role, onNavigate, onChangePassword }: { role: Role; onNavigate?: () => void; onChangePassword: () => void }) {
   const router = useRouter();
   const name = useSyncExternalStore(subscribe, () => session.name() ?? '', () => '');
   const [copied, setCopied] = useState(false);
@@ -78,6 +79,7 @@ function MenuContent({ role, onNavigate }: { role: Role; onNavigate?: () => void
           <Avatar name={name} size={36} tone="light" />
           <div className="min-w-0 leading-tight"><div className="truncate text-sm font-semibold">{name || 'Admin'}</div><div className="text-xs text-white/70">{role === 'DISPATCHER' ? 'Dispatcher' : 'Administrator'}</div></div>
         </div>
+        <button onClick={() => { onNavigate?.(); onChangePassword(); }} className={item}><KeyRound className="h-5 w-5" /> Change password</button>
         <button onClick={() => { session.clear(); router.replace('/login'); }} className={item}><LogOut className="h-5 w-5" /> Sign out</button>
       </div>
     </div>
@@ -87,11 +89,12 @@ function MenuContent({ role, onNavigate }: { role: Role; onNavigate?: () => void
 function Shell({ children }: { children: ReactNode }) {
   const role = useSyncExternalStore(subscribe, getRole, () => 'ADMIN') as Role;
   const [open, setOpen] = useState(false);
+  const [changing, setChanging] = useState(false);
 
   return (
     <div className="min-h-dvh bg-canvas text-ink print:bg-white">
       {/* Desktop: fixed sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 bg-navy p-4 text-white print:hidden md:block"><MenuContent role={role} /></aside>
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 bg-navy p-4 text-white print:hidden md:block"><MenuContent role={role} onChangePassword={() => setChanging(true)} /></aside>
 
       {/* Phone / tablet: app bar + drawer */}
       <header className="sticky top-0 z-30 flex items-center gap-2 bg-navy px-2 pb-2 pt-[calc(env(safe-area-inset-top)+0.5rem)] text-white print:hidden md:hidden">
@@ -102,11 +105,12 @@ function Shell({ children }: { children: ReactNode }) {
         <button aria-label="Close menu" tabIndex={open ? 0 : -1} onClick={() => setOpen(false)} className={`absolute inset-0 bg-navy/60 transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0'}`} />
         <aside role="dialog" aria-modal="true" aria-label="Menu" className={`absolute inset-y-0 left-0 w-72 max-w-[85%] bg-navy p-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] text-white transition-transform duration-200 ${open ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}>
           <button onClick={() => setOpen(false)} aria-label="Close" className="absolute right-2 top-2 flex h-11 w-11 items-center justify-center rounded-full active:bg-white/10"><X className="h-5 w-5" /></button>
-          <MenuContent role={role} onNavigate={() => setOpen(false)} />
+          <MenuContent role={role} onNavigate={() => setOpen(false)} onChangePassword={() => setChanging(true)} />
         </aside>
       </div>
 
       <div className="min-w-0 md:pl-64 print:pl-0">{children}</div>
+      {changing && <ChangePasswordSheet onClose={() => setChanging(false)} />}
     </div>
   );
 }
