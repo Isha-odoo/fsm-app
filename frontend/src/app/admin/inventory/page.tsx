@@ -9,7 +9,7 @@ import { ItemModal, StockModal, TYPE_LABEL } from '@/components/admin/ItemModals
 import { formatINR } from '@/lib/format';
 import type { InventoryItem, ItemType } from '@/lib/types';
 
-const th = 'p-3 text-xs font-semibold uppercase tracking-wide text-slate-500';
+const th = 'p-3 text-xs font-semibold uppercase tracking-wide text-muted';
 const TABS: { key: ItemType | 'ALL'; label: string }[] = [
   { key: 'ALL', label: 'All' }, { key: 'PRODUCT', label: 'Products' }, { key: 'SERVICE', label: 'Services' },
   { key: 'PART', label: 'Spare parts' }, { key: 'CONSUMABLE', label: 'Consumables' },
@@ -41,7 +41,7 @@ function Inventory() {
           <p className="text-sm text-slate-600">Products and services customers can raise tickets about, plus the spare parts and consumables technicians use.</p>
         </div>
         {canEdit && (
-          <button onClick={() => setEdit('new')} className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-slate-800">
+          <button onClick={() => setEdit('new')} className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white hover:bg-primary-dark">
             <Plus className="h-4 w-4" /> New item
           </button>
         )}
@@ -55,28 +55,28 @@ function Inventory() {
       )}
 
       <div className="flex flex-wrap items-center gap-2">
-        <div className="flex flex-wrap gap-1 rounded-xl bg-white p-1 shadow-sm ring-1 ring-slate-200">
+        <div className="flex flex-wrap gap-1 rounded-xl bg-white p-1 shadow-sm ring-1 ring-line">
           {TABS.map((t) => (
-            <button key={t.key} onClick={() => setTab(t.key)} className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${tab === t.key ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'}`}>{t.label}</button>
+            <button key={t.key} onClick={() => setTab(t.key)} className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${tab === t.key ? 'bg-primary text-white' : 'text-slate-600 hover:bg-slate-100'}`}>{t.label}</button>
           ))}
         </div>
         <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
           <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name or SKU…" aria-label="Search inventory"
-            className="rounded-xl border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm outline-none focus:border-slate-900" />
+            className="rounded-xl border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm outline-none focus:border-primary" />
         </div>
         <label className="flex items-center gap-2 text-sm text-slate-600"><input type="checkbox" checked={inactive} onChange={(e) => setInactive(e.target.checked)} className="h-4 w-4" /> Show inactive</label>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto rounded-2xl border border-line bg-white">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left">
+          <thead className="bg-canvas text-left">
             <tr><th className={th}>SKU</th><th className={th}>Name</th><th className={th}>Type</th><th className={`${th} text-right`}>Price</th><th className={`${th} text-right`}>GST</th><th className={`${th} text-right`}>On hand</th><th className={th}>Warranty</th><th className={th}>Customer form</th>{canEdit && <th className={th} />}</tr>
           </thead>
           <tbody>
             {items.isLoading && <tr><td colSpan={9} className="p-4"><div className="h-8 animate-pulse rounded bg-slate-100" /></td></tr>}
             {items.isError && <tr><td colSpan={9} className="p-4 text-red-700">{(items.error as Error).message}</td></tr>}
-            {items.isSuccess && rows.length === 0 && <tr><td colSpan={9} className="p-6 text-center text-slate-500">No items found.</td></tr>}
+            {items.isSuccess && rows.length === 0 && <tr><td colSpan={9} className="p-6 text-center text-muted">No items found.</td></tr>}
             {rows.map((i) => (
               <tr key={i.id} className={`border-t border-slate-100 ${i.isActive ? '' : 'text-slate-400'}`}>
                 <td className="p-3 font-mono text-xs">{i.sku}</td>
@@ -100,7 +100,7 @@ function Inventory() {
           </tbody>
         </table>
       </div>
-      {!canEdit && <p className="text-xs text-slate-500">Dispatchers can view inventory. Only administrators can change it.</p>}
+      {!canEdit && <p className="text-xs text-muted">Dispatchers can view inventory. Only administrators can change it.</p>}
 
       {edit && <ItemModal item={edit === 'new' ? undefined : edit} defaultType={tab === 'ALL' ? undefined : tab} onClose={() => setEdit(null)} />}
       {stockFor && <StockModal item={stockFor} onClose={() => setStockFor(null)} />}

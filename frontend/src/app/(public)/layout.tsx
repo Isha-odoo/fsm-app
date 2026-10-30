@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
-  return <div className="min-h-dvh bg-slate-50 text-slate-900">{children}</div>;
+  return <div className="min-h-dvh bg-canvas text-ink">{children}</div>;
 }

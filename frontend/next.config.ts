@@ -5,7 +5,7 @@ import type { NextConfig } from "next";
 const exporting = process.env.STATIC_EXPORT === "1";
 
 const nextConfig: NextConfig = {
-  ...(exporting ? { output: "export" as const, trailingSlash: true, images: { unoptimized: true } } : {}),
+  ...(exporting ? { output: "export" as const, trailingSlash: true } : {}),
   // Cache Components / partial prefetching are not available in static export mode.
   cacheComponents: !exporting,
   partialPrefetching: !exporting,

@@ -15,8 +15,8 @@ const toPaise = (v: string) => Math.round(Number(v) * 100);
 function Footer({ onClose, pending, label }: { onClose: () => void; pending: boolean; label: string }) {
   return (
     <div className="flex justify-end gap-2 pt-2">
-      <button type="button" onClick={onClose} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Cancel</button>
-      <button type="submit" disabled={pending} className="flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white hover:bg-slate-800 disabled:opacity-50">
+      <button type="button" onClick={onClose} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-canvas">Cancel</button>
+      <button type="submit" disabled={pending} className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-primary-dark disabled:opacity-50">
         {pending && <Loader2 className="h-4 w-4 animate-spin" />} {label}
       </button>
     </div>
@@ -80,12 +80,12 @@ export function ItemModal({ item, defaultType, onClose }: { item?: InventoryItem
           </div>
         )}
 
-        <div className="space-y-2 rounded-xl bg-slate-50 p-3 text-sm">
+        <div className="space-y-2 rounded-xl bg-canvas p-3 text-sm">
           <label className="flex items-start gap-2"><input type="checkbox" checked={warrantyCovers} onChange={(e) => setWarrantyCovers(e.target.checked)} className="mt-0.5 h-4 w-4" />
-            <span><span className="font-semibold">Free while the machine is in warranty</span><br /><span className="text-xs text-slate-500">Leave off for consumables like toner and ink.</span></span></label>
+            <span><span className="font-semibold">Free while the machine is in warranty</span><br /><span className="text-xs text-muted">Leave off for consumables like toner and ink.</span></span></label>
           {offerable && (
             <label className="flex items-start gap-2"><input type="checkbox" checked={requestable} onChange={(e) => setRequestable(e.target.checked)} className="mt-0.5 h-4 w-4" />
-              <span><span className="font-semibold">Offer on the customer request form</span><br /><span className="text-xs text-slate-500">Customers can pick this {type === 'PRODUCT' ? 'product' : 'service'} when they raise a ticket.</span></span></label>
+              <span><span className="font-semibold">Offer on the customer request form</span><br /><span className="text-xs text-muted">Customers can pick this {type === 'PRODUCT' ? 'product' : 'service'} when they raise a ticket.</span></span></label>
           )}
           {item && <label className="flex items-center gap-2"><input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} className="h-4 w-4" /> <span className="font-semibold">Active</span></label>}
         </div>
@@ -114,17 +114,17 @@ export function StockModal({ item, onClose }: { item: InventoryItem; onClose: ()
   return (
     <Modal title={`Stock: ${item.name}`} onClose={onClose}>
       <form onSubmit={onSubmit} className="space-y-3">
-        <p className="text-sm text-slate-600">On hand now: <span className="font-bold text-slate-900">{item.onHand}</span></p>
+        <p className="text-sm text-slate-600">On hand now: <span className="font-bold text-ink">{item.onHand}</span></p>
         <div className="flex gap-2">
           {([['PURCHASE', 'Receive stock'], ['ADJUSTMENT', 'Correct count']] as const).map(([m, label]) => (
-            <button key={m} type="button" onClick={() => setMode(m)} className={`flex-1 rounded-xl border px-3 py-2 text-sm font-semibold ${mode === m ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-300 hover:bg-slate-50'}`}>{label}</button>
+            <button key={m} type="button" onClick={() => setMode(m)} className={`flex-1 rounded-xl border px-3 py-2 text-sm font-semibold ${mode === m ? 'border-slate-900 bg-primary text-white' : 'border-slate-300 hover:bg-canvas'}`}>{label}</button>
           ))}
         </div>
         <Field label={mode === 'PURCHASE' ? 'Quantity received' : 'Quantity change (use a minus to remove)'}>
           <input required type="number" step="1" min={mode === 'PURCHASE' ? 1 : undefined} value={qty} onChange={(e) => setQty(e.target.value)} className={inputCls} />
         </Field>
         <Field label="Note" hint="e.g. purchase order no., or why the count changed"><input maxLength={300} value={note} onChange={(e) => setNote(e.target.value)} className={inputCls} /></Field>
-        {Number(qty) !== 0 && qty !== '' && <p className="text-sm text-slate-600">After this: <span className={`font-bold ${after < 0 ? 'text-red-700' : 'text-slate-900'}`}>{after}</span></p>}
+        {Number(qty) !== 0 && qty !== '' && <p className="text-sm text-slate-600">After this: <span className={`font-bold ${after < 0 ? 'text-red-700' : 'text-ink'}`}>{after}</span></p>}
         {save.isError && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-800">{(save.error as Error).message}</p>}
         <Footer onClose={onClose} pending={save.isPending} label="Update stock" />
       </form>

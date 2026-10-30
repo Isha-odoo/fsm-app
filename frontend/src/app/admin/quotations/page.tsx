@@ -10,8 +10,8 @@ import { QuoteStatusChip } from '@/components/StatusChip';
 import { formatDay, formatINR } from '@/lib/format';
 import type { QuoteStatus } from '@/lib/types';
 
-const th = 'p-3 text-xs font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap';
-const control = 'rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-sm outline-none focus:border-slate-900';
+const th = 'p-3 text-xs font-semibold uppercase tracking-wide text-muted whitespace-nowrap';
+const control = 'rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-sm outline-none focus:border-primary';
 
 function Quotations() {
   const [q, setQ] = useState('');
@@ -42,15 +42,15 @@ function Quotations() {
         <label className="flex items-center gap-1.5 text-sm text-slate-600">From <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={control} /></label>
         <label className="flex items-center gap-1.5 text-sm text-slate-600">To <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className={control} /></label>
       </div>
-      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto rounded-2xl border border-line bg-white">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left"><tr><th className={th}>Quotation</th><th className={th}>Date</th><th className={th}>Customer</th><th className={th}>Product</th><th className={th}>Ticket</th><th className={th}>Technician</th><th className={th}>Status</th><th className={`${th} text-right`}>Total</th><th className={th}>Invoice</th></tr></thead>
+          <thead className="bg-canvas text-left"><tr><th className={th}>Quotation</th><th className={th}>Date</th><th className={th}>Customer</th><th className={th}>Product</th><th className={th}>Ticket</th><th className={th}>Technician</th><th className={th}>Status</th><th className={`${th} text-right`}>Total</th><th className={th}>Invoice</th></tr></thead>
           <tbody>
             {list.isLoading && <tr><td colSpan={9} className="p-4"><div className="h-8 animate-pulse rounded bg-slate-100" /></td></tr>}
             {list.isError && <tr><td colSpan={9} className="p-4 text-red-700">{(list.error as Error).message}</td></tr>}
-            {list.isSuccess && rows.length === 0 && <tr><td colSpan={9} className="p-8 text-center text-slate-500">No quotations yet.</td></tr>}
+            {list.isSuccess && rows.length === 0 && <tr><td colSpan={9} className="p-8 text-center text-muted">No quotations yet.</td></tr>}
             {rows.map((r) => (
-              <tr key={r.id} className="border-t border-slate-100 hover:bg-slate-50">
+              <tr key={r.id} className="border-t border-slate-100 hover:bg-canvas">
                 <td className="p-3"><Link href={`/admin/quotations/view?id=${r.id}`} className="font-mono font-semibold underline-offset-2 hover:underline">{r.quotationNo}</Link></td>
                 <td className="whitespace-nowrap p-3 text-slate-600">{formatDay(r.createdAt)}</td>
                 <td className="p-3 font-semibold">{r.customerName}</td>

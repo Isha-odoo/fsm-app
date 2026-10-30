@@ -19,7 +19,7 @@ function InvoiceDoc() {
   return (
     <main className="p-4 md:p-6 print:p-0">
       <DocToolbar backHref="/admin/invoices" backLabel="All invoices">
-        {doc.ticket.id && <Link href={`/admin/tickets/view?id=${doc.ticket.id}`} className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Open ticket #{doc.ticket.ticketNo}</Link>}
+        {doc.ticket.id && <Link href={`/admin/tickets/view?id=${doc.ticket.id}`} className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-canvas">Open ticket #{doc.ticket.ticketNo}</Link>}
       </DocToolbar>
       <DocumentView doc={doc} />
     </main>

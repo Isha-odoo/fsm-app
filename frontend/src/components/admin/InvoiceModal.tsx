@@ -42,7 +42,7 @@ export function InvoiceModal({ ticketId, onClose }: { ticketId: string; onClose:
             <h2 className="flex items-center gap-2 text-lg font-bold"><Receipt className="h-5 w-5" /> Create invoice{t ? ` · Ticket #${t.ticketNo}` : ''}</h2>
             {t && <p className="text-sm text-slate-600">{t.customerName} · {t.model ?? 'Product not specified'}{t.service ? ` · ${t.service}` : ''} {t.serialNumber && <span className="font-mono text-xs">({t.serialNumber})</span>}</p>}
           </div>
-          <button onClick={onClose} aria-label="Close" className="rounded-full p-2 text-slate-500 hover:bg-slate-100"><X className="h-5 w-5" /></button>
+          <button onClick={onClose} aria-label="Close" className="rounded-full p-2 text-muted hover:bg-slate-100"><X className="h-5 w-5" /></button>
         </div>
 
         {ticket.isLoading && <div className="mt-6 h-32 animate-pulse rounded-xl bg-slate-100" />}
@@ -54,8 +54,8 @@ export function InvoiceModal({ ticketId, onClose }: { ticketId: string; onClose:
             <div className="font-mono text-xl font-bold">{done.invoice.invoiceNo}</div>
             <div className="text-slate-700">Total {formatINR(done.totalPaise)} (incl. GST)</div>
             <div className="flex flex-wrap justify-center gap-2">
-              <Link href={`/admin/invoices/view?id=${done.invoice.id}`} className="rounded-xl bg-emerald-600 px-6 py-2.5 font-bold text-white hover:bg-emerald-700">Open &amp; print invoice</Link>
-              <button onClick={onClose} className="rounded-xl border border-slate-300 bg-white px-6 py-2.5 font-semibold hover:bg-slate-50">Done</button>
+              <Link href={`/admin/invoices/view?id=${done.invoice.id}`} className="rounded-xl bg-primary px-6 py-2.5 font-bold text-white hover:bg-primary-dark">Open &amp; print invoice</Link>
+              <button onClick={onClose} className="rounded-xl border border-slate-300 bg-white px-6 py-2.5 font-semibold hover:bg-canvas">Done</button>
             </div>
           </div>
         )}
@@ -66,11 +66,11 @@ export function InvoiceModal({ ticketId, onClose }: { ticketId: string; onClose:
               <p className="mt-4 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-900">Already invoiced as <span className="font-mono font-semibold">{t.invoice.invoiceNo}</span> ({formatINR(t.invoice.totalPaise)}). <Link href={`/admin/invoices/view?id=${t.invoice.id}`} className="font-semibold underline">Open &amp; print</Link></p>
             )}
 
-            <div className="mt-4 grid gap-3 rounded-xl bg-slate-50 p-3 text-sm sm:grid-cols-2">
-              <div><div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Warranty at visit</div><div className="mt-1"><WarrantyChip status={t.warrantyStatus} /></div></div>
-              {t.quotation && <div><div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Customer quotation</div><div className="mt-1"><Link href={`/admin/quotations/view?id=${t.quotation.id}`} className="font-mono underline-offset-2 hover:underline">{t.quotation.quotationNo}</Link> · {formatINR(t.quotation.totalPaise)}</div></div>}
-              <div><div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Solved by</div><div className="mt-1">{t.technicianName ?? '—'} · {formatWhen(t.solvedAt)}</div></div>
-              {t.workDone && <div className="sm:col-span-2"><div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Solution</div><p className="mt-1">{t.workDone}</p></div>}
+            <div className="mt-4 grid gap-3 rounded-xl bg-canvas p-3 text-sm sm:grid-cols-2">
+              <div><div className="text-xs font-semibold uppercase tracking-wide text-muted">Warranty at visit</div><div className="mt-1"><WarrantyChip status={t.warrantyStatus} /></div></div>
+              {t.quotation && <div><div className="text-xs font-semibold uppercase tracking-wide text-muted">Customer quotation</div><div className="mt-1"><Link href={`/admin/quotations/view?id=${t.quotation.id}`} className="font-mono underline-offset-2 hover:underline">{t.quotation.quotationNo}</Link> · {formatINR(t.quotation.totalPaise)}</div></div>}
+              <div><div className="text-xs font-semibold uppercase tracking-wide text-muted">Solved by</div><div className="mt-1">{t.technicianName ?? '—'} · {formatWhen(t.solvedAt)}</div></div>
+              {t.workDone && <div className="sm:col-span-2"><div className="text-xs font-semibold uppercase tracking-wide text-muted">Solution</div><p className="mt-1">{t.workDone}</p></div>}
             </div>
 
             {!t.invoice && services.data && services.data.length > 0 && (
@@ -78,11 +78,11 @@ export function InvoiceModal({ ticketId, onClose }: { ticketId: string; onClose:
                 <legend className="mb-1.5 text-sm font-semibold">Add charges</legend>
                 <div className="space-y-1.5">
                   {services.data.map((c) => (
-                    <label key={c.id} className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-slate-200 p-3 text-sm has-[:checked]:border-slate-900">
+                    <label key={c.id} className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-line p-3 text-sm has-[:checked]:border-slate-900">
                       <span className="flex items-center gap-2.5">
                         <input type="checkbox" checked={!!extras[c.id]} onChange={(e) => setExtras((x) => ({ ...x, [c.id]: e.target.checked }))} className="h-4 w-4" />
                         {c.name}
-                        {!c.warrantyCovers && <span className="text-xs text-slate-500">(not covered by warranty)</span>}
+                        {!c.warrantyCovers && <span className="text-xs text-muted">(not covered by warranty)</span>}
                       </span>
                       <span className="tabular-nums text-slate-600">{formatINR(c.unitPricePaise ?? 0)}</span>
                     </label>
@@ -96,13 +96,13 @@ export function InvoiceModal({ ticketId, onClose }: { ticketId: string; onClose:
                 {preview.isLoading && <div className="h-28 animate-pulse rounded-xl bg-slate-100" />}
                 {preview.isError && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-800">{(preview.error as Error).message}</p>}
                 {preview.data && (
-                  <div className="overflow-x-auto rounded-xl border border-slate-200">
+                  <div className="overflow-x-auto rounded-xl border border-line">
                     <table className="w-full text-sm">
-                      <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+                      <thead className="bg-canvas text-left text-xs uppercase tracking-wide text-muted">
                         <tr><th className="p-2.5">Item</th><th className="p-2.5 text-right">Qty</th><th className="p-2.5 text-right">Rate</th><th className="p-2.5 text-right">GST</th><th className="p-2.5 text-right">Amount</th></tr>
                       </thead>
                       <tbody>
-                        {preview.data.lines.length === 0 && <tr><td colSpan={5} className="p-3 text-slate-500">No parts were logged. Add a charge above or create a zero-value invoice.</td></tr>}
+                        {preview.data.lines.length === 0 && <tr><td colSpan={5} className="p-3 text-muted">No parts were logged. Add a charge above or create a zero-value invoice.</td></tr>}
                         {preview.data.lines.map((l, i) => (
                           <tr key={i} className="border-t border-slate-100">
                             <td className="p-2.5">{l.description}{l.warrantyWaived && <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-800">Warranty</span>}</td>
@@ -113,7 +113,7 @@ export function InvoiceModal({ ticketId, onClose }: { ticketId: string; onClose:
                           </tr>
                         ))}
                       </tbody>
-                      <tfoot className="border-t border-slate-200 text-sm">
+                      <tfoot className="border-t border-line text-sm">
                         <TotalRow label="Subtotal" paise={preview.data.subtotalPaise} />
                         {preview.data.igstPaise > 0
                           ? <TotalRow label="IGST" paise={preview.data.igstPaise} />
@@ -130,9 +130,9 @@ export function InvoiceModal({ ticketId, onClose }: { ticketId: string; onClose:
 
             {!t.invoice && (
               <div className="mt-5 flex justify-end gap-2">
-                <button onClick={onClose} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Cancel</button>
+                <button onClick={onClose} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-canvas">Cancel</button>
                 <button onClick={() => create.mutate()} disabled={!preview.data || create.isPending}
-                  className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-emerald-700 disabled:opacity-50">
+                  className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-primary-dark disabled:opacity-50">
                   {create.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Generate invoice
                 </button>
               </div>
@@ -146,7 +146,7 @@ export function InvoiceModal({ ticketId, onClose }: { ticketId: string; onClose:
 
 function TotalRow({ label, paise, bold }: { label: string; paise: number; bold?: boolean }) {
   return (
-    <tr className={bold ? 'border-t border-slate-200 bg-slate-50 font-bold' : ''}>
+    <tr className={bold ? 'border-t border-line bg-canvas font-bold' : ''}>
       <td colSpan={4} className="p-2 pr-3 text-right text-slate-600">{label}</td>
       <td className="p-2 pr-2.5 text-right tabular-nums">{formatINR(paise)}</td>
     </tr>

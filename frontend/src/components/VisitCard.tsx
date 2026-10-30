@@ -1,49 +1,42 @@
 import Link from 'next/link';
-import { ChevronRight, Clock, MapPin, Printer } from 'lucide-react';
+import { Flag, MapPin, Printer, Wrench } from 'lucide-react';
 import type { Visit } from '@/lib/types';
-import { formatWhen } from '@/lib/format';
+import { dayLabel, formatTime } from '@/lib/format';
 import { VisitStatusChip } from './StatusChip';
+import { IconTile, cardCls } from './ui/parts';
 
-const PRIORITY_BAR = { 1: 'bg-red-500', 2: 'bg-amber-400', 3: 'bg-slate-300' } as const;
-
-export function VisitCard({ visit }: { visit: Visit }) {
+/** One ticket in a list. The whole card is the tap target. */
+export function VisitCard({ visit, highlight }: { visit: Visit; highlight?: boolean }) {
   const done = visit.status === 'COMPLETED';
+  const urgent = visit.priority === 1 && !done;
+  const title = visit.service ?? visit.assetModel ?? 'Service visit';
   return (
-    <Link
-      href={`/visits/detail?id=${visit.id}`}
-      className={`relative block overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 pl-5 shadow-sm active:bg-slate-50 ${done ? 'opacity-70' : ''}`}
-    >
-      <span className={`absolute inset-y-0 left-0 w-1.5 ${PRIORITY_BAR[visit.priority]}`} aria-hidden />
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="flex items-center gap-1.5 text-sm font-semibold text-slate-700">
-            <Clock className="h-4 w-4" /> {formatWhen(visit.scheduledFor)}
-            <span className="font-normal text-slate-400">· Ticket #{visit.jobNo}</span>
-          </div>
-          <h3 className="mt-1 truncate text-base font-bold">{visit.customerName}</h3>
+    <Link href={`/visits/detail?id=${visit.id}`}
+      className={`${cardCls} block p-4 active:bg-canvas ${highlight ? 'ring-2 ring-primary/30' : ''} ${done ? 'opacity-75' : ''}`}>
+      <div className="flex items-start gap-3">
+        <IconTile tone={urgent ? 'red' : done ? 'green' : 'blue'}><Wrench className="h-5 w-5" /></IconTile>
+        <div className="min-w-0 flex-1">
+          <h3 className="line-clamp-2 text-base font-bold leading-tight">{title}</h3>
+          <p className="mt-0.5 line-clamp-2 text-sm text-muted">#{visit.jobNo} · Client: {visit.customerName}</p>
         </div>
-        <VisitStatusChip status={visit.status} />
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <VisitStatusChip status={visit.status} />
+          <span className="text-xs font-semibold text-muted">{formatTime(visit.scheduledFor)}</span>
+        </div>
       </div>
 
-      <div className="mt-2 flex items-start gap-1.5 text-sm text-slate-600">
+      <div className="mt-3 flex items-start gap-1.5 text-sm text-muted">
         <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-        <span className="line-clamp-2">{visit.address}{visit.city ? `, ${visit.city}` : ''}</span>
+        <span className="line-clamp-1">{visit.address}{visit.city ? `, ${visit.city}` : ''}</span>
       </div>
 
-      <div className="mt-3 flex items-center justify-between gap-2">
-        <div className="flex min-w-0 items-center gap-1.5 text-sm text-slate-700">
-          <Printer className="h-4 w-4 shrink-0 text-slate-400" />
-          <span className="truncate">{visit.assetModel ?? (visit.serialNumber ? 'Machine not on file' : 'No serial given')}</span>
-          {visit.serialNumber && <span className="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs">{visit.serialNumber}</span>}
-        </div>
-        <ChevronRight className="h-5 w-5 shrink-0 text-slate-400" />
+      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+        {urgent && <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-1 font-semibold text-red-700"><Flag className="h-3 w-3" /> High priority</span>}
+        <span className="rounded-full bg-canvas px-2.5 py-1 font-semibold text-muted">{dayLabel(visit.scheduledFor) || 'Unscheduled'}</span>
+        {visit.assetModel && (
+          <span className="inline-flex min-w-0 items-center gap-1 rounded-full bg-canvas px-2.5 py-1 font-medium text-muted"><Printer className="h-3 w-3 shrink-0" /><span className="truncate">{visit.assetModel}</span></span>
+        )}
       </div>
-      {(visit.service || visit.issue) && (
-        <p className="mt-2 text-xs font-medium text-slate-500">
-          {visit.service && <span className="mr-2 rounded-full bg-sky-100 px-2 py-0.5 font-semibold text-sky-800">{visit.service}</span>}
-          {visit.issue && <>Issue: {visit.issue}</>}
-        </p>
-      )}
     </Link>
   );
 }

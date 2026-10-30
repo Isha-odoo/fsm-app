@@ -34,26 +34,26 @@ function Quotation() {
   return (
     <main className="px-3 py-6 sm:px-6">
       <div className="mx-auto mb-4 flex max-w-[210mm] justify-end print:hidden">
-        <button onClick={() => window.print()} className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-slate-800">
+        <button onClick={() => window.print()} className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white hover:bg-primary-dark">
           <Printer className="h-4 w-4" /> Print / Save as PDF
         </button>
       </div>
 
       <DocumentView doc={doc}>
         {doc.canDecide && (
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <div className="rounded-2xl border border-line bg-canvas p-4">
             <h2 className="font-bold">Your answer</h2>
             <p className="mt-1 text-sm text-slate-600">Approve this quotation so we can proceed, or let us know if you do not accept it.</p>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" aria-label="Your name" maxLength={120}
-                className="rounded-xl border border-slate-300 bg-white p-2.5 text-sm outline-none focus:border-slate-900" />
+                className="rounded-xl border border-slate-300 bg-white p-2.5 text-sm outline-none focus:border-primary" />
               <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note (optional)" aria-label="Note" maxLength={300}
-                className="rounded-xl border border-slate-300 bg-white p-2.5 text-sm outline-none focus:border-slate-900" />
+                className="rounded-xl border border-slate-300 bg-white p-2.5 text-sm outline-none focus:border-primary" />
             </div>
             {decide.isError && <p role="alert" className="mt-3 rounded-xl bg-red-50 p-3 text-sm text-red-800">{(decide.error as Error).message}</p>}
             <div className="mt-3 flex flex-wrap gap-2">
               <button onClick={() => decide.mutate('APPROVED')} disabled={name.trim().length < 2 || decide.isPending}
-                className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-emerald-700 disabled:opacity-50">
+                className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-primary-dark disabled:opacity-50">
                 {decide.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />} Approve
               </button>
               <button onClick={() => decide.mutate('REJECTED')} disabled={name.trim().length < 2 || decide.isPending}

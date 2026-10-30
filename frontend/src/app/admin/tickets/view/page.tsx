@@ -36,15 +36,15 @@ function describe(a: ActivityEntry): string {
 
 function Card({ title, children, right }: { title: string; children: ReactNode; right?: ReactNode }) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-4">
-      <div className="mb-3 flex items-center justify-between gap-2"><h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">{title}</h2>{right}</div>
+    <section className="rounded-2xl border border-line bg-white p-4">
+      <div className="mb-3 flex items-center justify-between gap-2"><h2 className="text-xs font-semibold uppercase tracking-wide text-muted">{title}</h2>{right}</div>
       {children}
     </section>
   );
 }
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
-  return <div><dt className="text-xs text-slate-500">{label}</dt><dd className="mt-0.5 font-medium">{children || <span className="text-slate-400">—</span>}</dd></div>;
+  return <div><dt className="text-xs text-muted">{label}</dt><dd className="mt-0.5 font-medium">{children || <span className="text-slate-400">—</span>}</dd></div>;
 }
 
 function TicketForm() {
@@ -62,7 +62,7 @@ function TicketForm() {
 
   return (
     <main className="space-y-4 p-4 md:p-6">
-      <Link href="/admin/dispatch" className="flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-slate-900"><ArrowLeft className="h-4 w-4" /> Dispatch board</Link>
+      <Link href="/admin/dispatch" className="flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-ink"><ArrowLeft className="h-4 w-4" /> Dispatch board</Link>
 
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
@@ -71,19 +71,19 @@ function TicketForm() {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <TicketStatusChip status={t.status} />
-          {t.quotation && <Link href={`/admin/quotations/view?id=${t.quotation.id}`} className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold hover:bg-slate-50"><FileText className="h-4 w-4" /> {t.quotation.quotationNo}</Link>}
-          {t.invoice && <Link href={`/admin/invoices/view?id=${t.invoice.id}`} className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold hover:bg-slate-50"><Receipt className="h-4 w-4" /> {t.invoice.invoiceNo}</Link>}
+          {t.quotation && <Link href={`/admin/quotations/view?id=${t.quotation.id}`} className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold hover:bg-canvas"><FileText className="h-4 w-4" /> {t.quotation.quotationNo}</Link>}
+          {t.invoice && <Link href={`/admin/invoices/view?id=${t.invoice.id}`} className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold hover:bg-canvas"><Receipt className="h-4 w-4" /> {t.invoice.invoiceNo}</Link>}
           {isAdmin && t.status === 'SOLVED' && !t.invoice && (
-            <button onClick={() => setInvoicing(true)} className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white hover:bg-emerald-700"><Receipt className="h-4 w-4" /> Create invoice</button>
+            <button onClick={() => setInvoicing(true)} className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary-dark"><Receipt className="h-4 w-4" /> Create invoice</button>
           )}
         </div>
       </header>
 
       {/* Odoo-style status bar */}
       {stage >= 0 ? (
-        <ol className="flex flex-wrap gap-1 rounded-2xl border border-slate-200 bg-white p-2 text-sm font-semibold">
+        <ol className="flex flex-wrap gap-1 rounded-2xl border border-line bg-white p-2 text-sm font-semibold">
           {STAGES.map((s, i) => (
-            <li key={s} className={`flex items-center gap-1.5 rounded-xl px-4 py-1.5 ${i === stage ? 'bg-slate-900 text-white' : i < stage ? 'bg-emerald-50 text-emerald-800' : 'text-slate-400'}`}>
+            <li key={s} className={`flex items-center gap-1.5 rounded-xl px-4 py-1.5 ${i === stage ? 'bg-primary text-white' : i < stage ? 'bg-emerald-50 text-emerald-800' : 'text-slate-400'}`}>
               {i < stage && <Check className="h-4 w-4" />} {s}
             </li>
           ))}
@@ -116,7 +116,7 @@ function TicketForm() {
               <Field label="Solved">{t.completedAt && formatWhen(t.completedAt)}</Field>
               {t.warrantyEnd && <Field label="Warranty ends">{t.warrantyEnd}</Field>}
             </dl>
-            {t.workDone && <div className="mt-3 rounded-xl bg-slate-50 p-3"><div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Solution</div><p className="mt-1 whitespace-pre-line">{t.workDone}</p></div>}
+            {t.workDone && <div className="mt-3 rounded-xl bg-canvas p-3"><div className="text-xs font-semibold uppercase tracking-wide text-muted">Solution</div><p className="mt-1 whitespace-pre-line">{t.workDone}</p></div>}
             {(t.status === 'NEW' || t.status === 'ASSIGNED') && (
               <div className="mt-4 max-w-md border-t border-slate-100 pt-4"><AssignControl ticket={t} technicians={techs.data ?? []} /></div>
             )}
@@ -126,9 +126,9 @@ function TicketForm() {
             <Card title="Quoted items" right={t.quotation && <QuoteStatusChip status={t.quotation.status} />}>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="text-left text-xs uppercase tracking-wide text-slate-500"><tr><th className="pb-2">Item</th><th className="pb-2 text-right">Qty</th><th className="pb-2 text-right">Rate</th><th className="pb-2 text-right">Amount</th></tr></thead>
+                  <thead className="text-left text-xs uppercase tracking-wide text-muted"><tr><th className="pb-2">Item</th><th className="pb-2 text-right">Qty</th><th className="pb-2 text-right">Rate</th><th className="pb-2 text-right">Amount</th></tr></thead>
                   <tbody>
-                    {parts.length === 0 && <tr><td colSpan={4} className="py-2 text-slate-500">No parts or services were used.</td></tr>}
+                    {parts.length === 0 && <tr><td colSpan={4} className="py-2 text-muted">No parts or services were used.</td></tr>}
                     {parts.map((p, i) => (
                       <tr key={i} className="border-t border-slate-100">
                         <td className="py-2">{p.description}{p.warrantyWaived && <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-800">Warranty</span>}</td>
@@ -140,7 +140,7 @@ function TicketForm() {
                   </tbody>
                 </table>
               </div>
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3 text-sm">
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-line pt-3 text-sm">
                 <span className="text-slate-600">{t.quotation ? `Quotation total (with GST): ${t.quotation.totalPaise === 0 ? 'no charge' : formatINR(t.quotation.totalPaise)}` : 'Solved before quotations existed: no quotation was created. An invoice can still be made.'}</span>
                 {t.invoice && <span className="font-semibold">Invoiced: {t.invoice.invoiceNo} · {formatINR(t.invoice.totalPaise)}</span>}
               </div>
@@ -149,13 +149,13 @@ function TicketForm() {
         </div>
 
         <Card title="History">
-          <ol className="relative space-y-4 border-l border-slate-200 pl-4">
-            {(t.activity ?? []).length === 0 && <li className="text-sm text-slate-500">No recorded activity.</li>}
+          <ol className="relative space-y-4 border-l border-line pl-4">
+            {(t.activity ?? []).length === 0 && <li className="text-sm text-muted">No recorded activity.</li>}
             {(t.activity ?? []).map((a, i) => (
               <li key={i} className="relative">
                 <span className="absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-full bg-slate-400 ring-4 ring-white" />
                 <p className="text-sm font-medium">{describe(a)}</p>
-                <p className="text-xs text-slate-500">{a.actor ?? 'Customer'} · {formatWhen(a.at)}</p>
+                <p className="text-xs text-muted">{a.actor ?? 'Customer'} · {formatWhen(a.at)}</p>
               </li>
             ))}
           </ol>

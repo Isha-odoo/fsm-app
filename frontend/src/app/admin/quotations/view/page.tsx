@@ -35,14 +35,14 @@ function QuotationDoc() {
     <main className="p-4 md:p-6 print:p-0">
       <DocToolbar backHref="/admin/quotations" backLabel="All quotations">
         <QuoteStatusChip status={doc.status as QuoteStatus} />
-        {doc.ticket.id && <Link href={`/admin/tickets/view?id=${doc.ticket.id}`} className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Open ticket #{doc.ticket.ticketNo}</Link>}
-        <button onClick={() => link.mutate()} disabled={link.isPending} className="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 disabled:opacity-60">
+        {doc.ticket.id && <Link href={`/admin/tickets/view?id=${doc.ticket.id}`} className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-canvas">Open ticket #{doc.ticket.ticketNo}</Link>}
+        <button onClick={() => link.mutate()} disabled={link.isPending} className="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-canvas disabled:opacity-60">
           {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Link2 className="h-4 w-4" />} {copied ? 'Customer link copied' : 'Copy customer link'}
         </button>
         {doc.status === 'SHARED' && (
           <>
             <button onClick={() => decide.mutate('APPROVED')} disabled={decide.isPending} className="flex items-center gap-2 rounded-xl border border-emerald-600 bg-white px-4 py-2.5 text-sm font-semibold text-emerald-700 hover:bg-emerald-50 disabled:opacity-60"><CheckCircle2 className="h-4 w-4" /> Mark approved</button>
-            <button onClick={() => decide.mutate('REJECTED')} disabled={decide.isPending} className="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 disabled:opacity-60"><ThumbsDown className="h-4 w-4" /> Mark declined</button>
+            <button onClick={() => decide.mutate('REJECTED')} disabled={decide.isPending} className="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-canvas disabled:opacity-60"><ThumbsDown className="h-4 w-4" /> Mark declined</button>
           </>
         )}
       </DocToolbar>

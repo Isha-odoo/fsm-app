@@ -15,10 +15,10 @@ const newestFirst = (a: Ticket, b: Ticket) => (b.solvedAt ?? b.createdAt).locale
 
 function Column({ title, hint, count, icon, children }: { title: string; hint: string; count: number; icon: ReactNode; children: ReactNode }) {
   return (
-    <section className="flex min-h-0 flex-col rounded-2xl bg-slate-100/70 p-3">
+    <section className="flex min-h-0 flex-col rounded-2xl bg-wash p-3">
       <header className="mb-3 flex items-center gap-2 px-1">
-        <span className="text-slate-500">{icon}</span>
-        <div className="min-w-0 flex-1"><h2 className="font-bold leading-tight">{title}</h2><p className="text-xs text-slate-500">{hint}</p></div>
+        <span className="text-muted">{icon}</span>
+        <div className="min-w-0 flex-1"><h2 className="font-bold leading-tight">{title}</h2><p className="text-xs text-muted">{hint}</p></div>
         <span className="rounded-full bg-white px-2.5 py-0.5 text-sm font-bold tabular-nums shadow-sm">{count}</span>
       </header>
       <div className="space-y-3">{children}</div>
@@ -27,7 +27,7 @@ function Column({ title, hint, count, icon, children }: { title: string; hint: s
 }
 
 function Empty({ children }: { children: ReactNode }) {
-  return <p className="rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">{children}</p>;
+  return <p className="rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm text-muted">{children}</p>;
 }
 
 function Board() {
@@ -53,7 +53,7 @@ function Board() {
           <h1 className="text-2xl font-bold">Dispatch board</h1>
           <p className="text-sm text-slate-600">Assign new customer tickets, follow technicians in the field, then invoice solved tickets.</p>
         </div>
-        <button onClick={() => { tickets.refetch(); technicians.refetch(); }} aria-label="Refresh" className="rounded-full border border-slate-300 bg-white p-2.5 hover:bg-slate-50">
+        <button onClick={() => { tickets.refetch(); technicians.refetch(); }} aria-label="Refresh" className="rounded-full border border-slate-300 bg-white p-2.5 hover:bg-canvas">
           <RefreshCw className={`h-5 w-5 ${tickets.isFetching ? 'animate-spin' : ''}`} />
         </button>
       </header>
@@ -90,7 +90,7 @@ function Board() {
           {!tickets.isLoading && solved.length === 0 && <Empty>Nothing waiting to be invoiced.</Empty>}
           {solved.map((t) => (
             <AdminTicketCard key={t.id} ticket={t}>
-              <button onClick={() => setInvoiceFor(t.id)} className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm font-bold text-white hover:bg-emerald-700">
+              <button onClick={() => setInvoiceFor(t.id)} className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-2.5 text-sm font-bold text-white hover:bg-primary-dark">
                 <Receipt className="h-4 w-4" /> Create invoice
               </button>
             </AdminTicketCard>

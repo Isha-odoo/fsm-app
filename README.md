@@ -150,6 +150,12 @@ Pages that need an id use query strings (`/visits/detail?id=...`, `/admin/ticket
 
 ---
 
+## Design system
+
+Blue and white theme defined once in `frontend/src/app/globals.css` (`primary`, `navy`, `canvas`, `ink`, `muted`, `line`; one system font stack, so it renders as Roboto on Android). Shared pieces live in `frontend/src/components/ui/`: `AppBar`, `BottomNav`, `SideMenu`, `Logo`, `SplashScreen`, `Avatar`, and `parts.tsx` (cards, icon tiles, empty / error / loading states, buttons). The technician app has bottom navigation (Home, Tickets, Profile) and a side menu; the office screens use a navy sidebar on desktop and a drawer on phones.
+
+---
+
 ## If you see `{"error":"Not found"}` in the browser
 
 That is the API (port 4000, or whatever `PORT` you set), which has no web pages; the API address now explains itself instead. Open the **web app** address (port 3000 by default). If you changed a port, make `frontend/.env.local` `NEXT_PUBLIC_API_URL` point at the API (for example `http://localhost:3001/api`) and `CORS_ORIGIN` in `backend/.env` match the address you open the web app on.

@@ -9,8 +9,8 @@ import { EmployeeModal, ROLE_LABEL } from '@/components/admin/EmployeeModal';
 import { formatDay } from '@/lib/format';
 import type { Employee } from '@/lib/types';
 
-const th = 'p-3 text-xs font-semibold uppercase tracking-wide text-slate-500';
-const ROLE_CHIP = { ADMIN: 'bg-violet-100 text-violet-800', DISPATCHER: 'bg-sky-100 text-sky-800', TECHNICIAN: 'bg-slate-100 text-slate-700' } as const;
+const th = 'p-3 text-xs font-semibold uppercase tracking-wide text-muted';
+const ROLE_CHIP = { ADMIN: 'bg-violet-100 text-violet-800', DISPATCHER: 'bg-primary-soft text-primary', TECHNICIAN: 'bg-slate-100 text-slate-700' } as const;
 
 function Employees() {
   const [editing, setEditing] = useState<Employee | 'new' | null>(null);
@@ -27,7 +27,7 @@ function Employees() {
           <h1 className="text-2xl font-bold">Employees</h1>
           <p className="text-sm text-slate-600">Every employee has their own login. Technicians only see tickets assigned to them; administrators see everything.</p>
         </div>
-        <button onClick={() => setEditing('new')} className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-slate-800">
+        <button onClick={() => setEditing('new')} className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white hover:bg-primary-dark">
           <Plus className="h-4 w-4" /> New employee
         </button>
       </header>
@@ -38,14 +38,14 @@ function Employees() {
         </p>
       )}
 
-      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto rounded-2xl border border-line bg-white">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left"><tr><th className={th}>Name</th><th className={th}>Email</th><th className={th}>Phone</th><th className={th}>Role</th><th className={`${th} text-right`}>Open tickets</th><th className={th}>Status</th><th className={th}>Added</th><th className={th} /></tr></thead>
+          <thead className="bg-canvas text-left"><tr><th className={th}>Name</th><th className={th}>Email</th><th className={th}>Phone</th><th className={th}>Role</th><th className={`${th} text-right`}>Open tickets</th><th className={th}>Status</th><th className={th}>Added</th><th className={th} /></tr></thead>
           <tbody>
             {employees.isLoading && <tr><td colSpan={8} className="p-4"><div className="h-8 animate-pulse rounded bg-slate-100" /></td></tr>}
             {employees.data?.map((e) => (
               <tr key={e.id} className={`border-t border-slate-100 ${e.isActive ? '' : 'text-slate-400'}`}>
-                <td className="p-3 font-semibold">{e.name}{e.id === myId && <span className="ml-2 text-xs font-normal text-slate-500">(you)</span>}</td>
+                <td className="p-3 font-semibold">{e.name}{e.id === myId && <span className="ml-2 text-xs font-normal text-muted">(you)</span>}</td>
                 <td className="p-3">{e.email}</td>
                 <td className="p-3">{e.phone ?? '—'}</td>
                 <td className="p-3"><span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${ROLE_CHIP[e.role]}`}>{ROLE_LABEL[e.role]}</span></td>

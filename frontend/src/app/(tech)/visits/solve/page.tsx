@@ -1,10 +1,10 @@
 'use client';
 
 import { useMemo, useRef, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, CheckCircle2, Loader2, Minus, Plus, Search, Trash2 } from 'lucide-react';
+import { CheckCircle2, Loader2, Minus, Plus, Search, Trash2 } from 'lucide-react';
+import { AppBar } from '@/components/ui/AppBar';
 import { api } from '@/lib/api';
 import { useIdParam } from '@/lib/useIdParam';
 import { ClientOnly } from '@/components/ClientOnly';
@@ -88,20 +88,14 @@ function SolveForm() {
         </div>
         <ShareButtons url={result.shareUrl} quotationNo={result.quotation.quotationNo} customerName={v?.customerName ?? 'Customer'} phone={v?.contactPhone ?? v?.customerPhone} />
         <p className="text-center text-xs text-slate-500">The customer can view, print and approve it from the link. The office sees it on the ticket.</p>
-        <button onClick={() => router.push('/')} className="w-full rounded-2xl bg-slate-900 py-4 font-bold text-white active:bg-slate-800">Back to my tickets</button>
+        <button onClick={() => router.push('/')} className="min-h-12 w-full rounded-xl bg-primary font-semibold text-white active:bg-primary-dark">Back to my tickets</button>
       </main>
     );
   }
 
   return (
     <main className="pb-44">
-      <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur">
-        <Link href={`/visits/detail?id=${id}`} aria-label="Back to ticket" className="rounded-full p-2 active:bg-slate-100"><ArrowLeft className="h-5 w-5" /></Link>
-        <div className="min-w-0">
-          <h1 className="text-base font-bold">Solve &amp; create quotation</h1>
-          <p className="truncate text-xs text-slate-500">{visit.data ? `${visit.data.customerName} · ${visit.data.assetModel ?? visit.data.serialNumber ?? 'no machine'}` : 'Loading…'}</p>
-        </div>
-      </header>
+      <AppBar title="Solve & Quote" subtitle={visit.data ? `${visit.data.customerName} · ${visit.data.assetModel ?? visit.data.serialNumber ?? 'no machine'}` : 'Loading…'} back={`/visits/detail?id=${id}`} />
 
       <div className="space-y-5 p-4">
         <WarrantyCard warranty={warranty.data} isLoading={warranty.isLoading} isError={warranty.isError} onRetry={() => warranty.refetch()} compact />
@@ -195,7 +189,7 @@ function SolveForm() {
           <div className="flex justify-between text-base font-bold"><span>Quotation total</span><span className="tabular-nums">{total === 0 ? 'No charge' : formatINR(total)}</span></div>
         </div>
         <button onClick={() => submit.mutate()} disabled={!canSubmit}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-4 text-base font-bold text-white active:bg-emerald-700 disabled:opacity-50">
+          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-base font-semibold text-white active:bg-primary-dark disabled:opacity-50">
           {submit.isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : <CheckCircle2 className="h-5 w-5" />}
           Solve &amp; create quotation
         </button>

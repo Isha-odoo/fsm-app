@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { X } from 'lucide-react';
 
-export const inputCls = 'w-full rounded-xl border border-slate-300 bg-white p-2.5 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10';
+export const inputCls = 'w-full rounded-xl border border-slate-300 bg-white p-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/15';
 
 export function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
   return (
@@ -11,7 +11,7 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
       <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
         <div className="mb-4 flex items-center justify-between gap-3">
           <h2 className="text-lg font-bold">{title}</h2>
-          <button onClick={onClose} aria-label="Close" className="rounded-full p-2 text-slate-500 hover:bg-slate-100"><X className="h-5 w-5" /></button>
+          <button onClick={onClose} aria-label="Close" className="rounded-full p-2 text-muted hover:bg-slate-100"><X className="h-5 w-5" /></button>
         </div>
         {children}
       </div>
@@ -24,7 +24,7 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
     <label className="block">
       <span className="mb-1 block text-sm font-semibold">{label}</span>
       {children}
-      {hint && <span className="mt-1 block text-xs text-slate-500">{hint}</span>}
+      {hint && <span className="mt-1 block text-xs text-muted">{hint}</span>}
     </label>
   );
 }

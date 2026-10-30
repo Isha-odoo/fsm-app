@@ -10,8 +10,6 @@
     "build:static": "STATIC_EXPORT=1 next build"
   },
   "dependencies": {
-    "@capacitor/android": "^8.5.3",
-    "@capacitor/core": "^8.5.3",
     "@tanstack/react-query": "^5.104.5",
     "lucide-react": "^1.61.0",
     "next": "16.4.2",
@@ -19,7 +17,6 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
-    "@capacitor/cli": "^7.6.9",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

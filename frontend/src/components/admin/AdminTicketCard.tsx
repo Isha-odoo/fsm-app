@@ -10,11 +10,11 @@ const PRIORITY_BAR = { 1: 'bg-red-500', 2: 'bg-amber-400', 3: 'bg-slate-300' } a
 /** One ticket on the dispatch board. `children` is the action area (assign, invoice, ...). */
 export function AdminTicketCard({ ticket: t, children }: { ticket: Ticket; children?: ReactNode }) {
   return (
-    <article className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 pl-5 shadow-sm">
+    <article className="relative overflow-hidden rounded-2xl border border-line bg-white p-4 pl-5 shadow-sm">
       <span className={`absolute inset-y-0 left-0 w-1.5 ${PRIORITY_BAR[t.priority]}`} aria-hidden />
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-x-2 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center gap-x-2 text-xs text-muted">
             <Link href={`/admin/tickets/view?id=${t.id}`} className="font-mono font-semibold text-slate-700 underline-offset-2 hover:underline">#{t.ticketNo}</Link>
             <span>{timeAgo(t.createdAt)}</span>
             {t.priority === 1 && <span className="font-semibold text-red-600">{PRIORITY_LABEL[1]}</span>}
@@ -36,26 +36,26 @@ export function AdminTicketCard({ ticket: t, children }: { ticket: Ticket; child
           {t.serialNumber && <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs">{t.serialNumber}</span>}
           {!t.serialRecognised && t.serialNumber && <span className="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-semibold text-amber-800">Serial not recognised</span>}
         </div>
-        <p className="line-clamp-1 text-xs text-slate-500">{t.address}{t.city ? `, ${t.city}` : ''}</p>
+        <p className="line-clamp-1 text-xs text-muted">{t.address}{t.city ? `, ${t.city}` : ''}</p>
       </div>
 
-      {(t.service || t.issue || t.description) && (
-        <p className="mt-2 line-clamp-3 text-sm text-slate-800">
-          {t.service && <span className="mr-1.5 rounded-full bg-sky-100 px-2 py-0.5 text-xs font-semibold text-sky-800">{t.service}</span>}
-          {t.issue && <span className="mr-1.5 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold">{t.issue}</span>}
-          {t.description}
-        </p>
+      {(t.service || t.issue) && (
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {t.service && <span className="rounded-full bg-primary-soft px-2 py-0.5 text-xs font-semibold text-primary">{t.service}</span>}
+          {t.issue && <span className="rounded-full bg-canvas px-2 py-0.5 text-xs font-semibold text-muted">{t.issue}</span>}
+        </div>
       )}
+      {t.description && <p className="mt-1.5 line-clamp-3 text-sm text-ink">{t.description}</p>}
 
       {t.technicianName && (
-        <p className="mt-2 text-xs text-slate-500">
+        <p className="mt-2 text-xs text-muted">
           Technician: <span className="font-semibold text-slate-700">{t.technicianName}</span>
           {t.assignedByName && <> · assigned by <span className="font-semibold text-slate-700">{t.assignedByName}</span></>}
         </p>
       )}
 
       {t.status === 'SOLVED' && (
-        <div className="mt-2 space-y-1 rounded-xl bg-slate-50 p-2.5 text-xs text-slate-600">
+        <div className="mt-2 space-y-1 rounded-xl bg-canvas p-2.5 text-xs text-slate-600">
           <div className="flex flex-wrap items-center gap-2"><WarrantyChip status={t.warrantyStatus} />
             {t.quotation && <><span className="font-semibold text-slate-800">{t.quotation.quotationNo} · {t.quotation.totalPaise === 0 ? 'No charge' : formatINR(t.quotation.totalPaise)}</span><QuoteStatusChip status={t.quotation.status} /></>}
             {t.invoice && <span className="font-semibold text-slate-800">{t.invoice.invoiceNo} · {formatINR(t.invoice.totalPaise)}</span>}</div>

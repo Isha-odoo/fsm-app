@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
+import { TechChrome } from '@/components/ui/TechChrome';
 
 export const metadata: Metadata = { title: 'Bhawani FSM — Technician' };
 
-/** Phone-width column; centred on desktop so you can preview it in a normal browser window. */
+/** Technician app: phone-width column with side menu and bottom navigation (centred when previewed on a desktop). */
 export default function TechLayout({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto min-h-dvh max-w-md bg-slate-50 text-slate-900 shadow-xl">{children}</div>;
+  return <TechChrome>{children}</TechChrome>;
 }

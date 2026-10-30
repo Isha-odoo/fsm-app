@@ -89,3 +89,25 @@ export function amountInWords(paise: number): string {
   if (rupees % 1000) words.push(below1000(rupees % 1000));
   return `Rupees ${words.join(' ') || 'Zero'}${ps ? ` and ${below100(ps)} Paise` : ''} Only`;
 }
+
+/** "Today", "Yesterday", "Tomorrow" or "23 Oct" (IST) for a timestamp. */
+export function dayLabel(iso: string | null): string {
+  if (!iso) return '';
+  const day = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date(iso));
+  if (day === istDate()) return 'Today';
+  if (day === istDate(-1)) return 'Yesterday';
+  if (day === istDate(1)) return 'Tomorrow';
+  return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' });
+}
+
+/** "Good morning" / "Good afternoon" / "Good evening" by the hour in IST. */
+export function greeting(): string {
+  const h = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Asia/Kolkata' }).format(new Date())) % 24;
+  return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+}
+
+export function initials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return '?';
+  return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
+}

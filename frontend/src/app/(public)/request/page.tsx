@@ -2,13 +2,14 @@
 
 import { useRef, useState, type FormEvent } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { CheckCircle2, Loader2, Wrench } from 'lucide-react';
+import { CheckCircle2, Loader2 } from 'lucide-react';
+import { Logo } from '@/components/ui/Logo';
 import { ApiError, api } from '@/lib/api';
 import { ClientOnly } from '@/components/ClientOnly';
 
 const EMPTY = { name: '', company: '', phone: '', email: '', serialNumber: '', address: '', city: '', productId: '', serviceId: '', description: '', website: '' };
 
-const input = 'w-full rounded-xl border border-slate-300 bg-white p-3 text-base outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10';
+const input = 'min-h-12 w-full rounded-xl border border-line bg-white px-3.5 py-3 text-base outline-none focus:border-primary focus:ring-2 focus:ring-primary/15';
 
 /** Turns the server's field errors into one readable sentence. */
 function describe(err: unknown): string {
@@ -56,7 +57,7 @@ function RequestForm() {
   if (ticketNo !== null) {
     return (
       <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-4 p-6 text-center">
-        <CheckCircle2 className="h-16 w-16 text-emerald-600" />
+        <span className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50"><CheckCircle2 className="h-12 w-12 text-emerald-600" /></span>
         <h1 className="text-2xl font-bold">Request received</h1>
         <div className="w-full rounded-2xl border border-slate-200 bg-white p-4">
           <div className="text-sm text-slate-500">Your ticket number</div>
@@ -74,14 +75,15 @@ function RequestForm() {
   }
 
   return (
-    <main className="mx-auto max-w-lg px-4 pb-12 pt-8">
-      <div className="mb-6 text-center">
-        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 text-white"><Wrench className="h-7 w-7" /></div>
-        <h1 className="text-2xl font-bold">Request a service visit</h1>
-        <p className="mt-1 text-sm text-slate-600">Bhawani Print &amp; Pack. Tell us what is wrong and we will send a technician.</p>
-      </div>
+    <main className="mx-auto max-w-lg pb-12">
+      <header className="bg-navy px-6 pb-14 pt-[max(2rem,env(safe-area-inset-top))] text-center text-white">
+        <Logo size={56} tone="light" className="mx-auto" />
+        <h1 className="mt-3 text-2xl font-bold">Request a service visit</h1>
+        <p className="mt-1 text-sm text-white/80">Bhawani Print &amp; Pack. Tell us what is wrong and we will send a technician.</p>
+      </header>
 
-      <form onSubmit={onSubmit} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <form onSubmit={onSubmit} className="relative -mt-8 mx-4 space-y-4 rounded-2xl border border-line bg-white p-5 shadow-card">
+        <h2 className="pt-1 text-sm font-bold text-primary">Your details</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field id="name" label="Your name" required><input id="name" required minLength={2} maxLength={120} autoComplete="name" value={form.name} onChange={set('name')} className={input} /></Field>
           <Field id="phone" label="Phone number" required><input id="phone" required type="tel" inputMode="tel" autoComplete="tel" placeholder="98250 12345" value={form.phone} onChange={set('phone')} className={input} /></Field>
@@ -91,6 +93,7 @@ function RequestForm() {
           <Field id="email" label="Email"><input id="email" type="email" maxLength={200} autoComplete="email" value={form.email} onChange={set('email')} className={input} /></Field>
         </div>
 
+        <h2 className="pt-1 text-sm font-bold text-primary">Machine and service</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field id="product" label="Product / model" hint="Not sure? Leave it, the serial number is enough.">
             <select id="product" value={form.productId} onChange={set('productId')} className={input}>
@@ -115,6 +118,7 @@ function RequestForm() {
         </Field>
         <Field id="city" label="City"><input id="city" maxLength={80} autoComplete="address-level2" value={form.city} onChange={set('city')} className={input} /></Field>
 
+        <h2 className="pt-1 text-sm font-bold text-primary">The problem</h2>
         <Field id="description" label="What is the problem?" required>
           <textarea id="description" required rows={4} minLength={10} maxLength={2000} placeholder="e.g. Prints come out blank after a power cut. It shows error E-502." value={form.description} onChange={set('description')} className={input} />
         </Field>
@@ -127,7 +131,7 @@ function RequestForm() {
         {submit.isError && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-800">{describe(submit.error)}</p>}
 
         <button type="submit" disabled={submit.isPending}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 py-4 text-base font-bold text-white active:bg-slate-800 disabled:opacity-60">
+          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary text-base font-semibold text-white shadow-sm active:bg-primary-dark disabled:opacity-60">
           {submit.isPending && <Loader2 className="h-5 w-5 animate-spin" />} Submit request
         </button>
       </form>

@@ -8,8 +8,8 @@ import { api } from '@/lib/api';
 import { ClientOnly } from '@/components/ClientOnly';
 import { formatDay, formatINR } from '@/lib/format';
 
-const th = 'p-3 text-xs font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap';
-const control = 'rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-sm outline-none focus:border-slate-900';
+const th = 'p-3 text-xs font-semibold uppercase tracking-wide text-muted whitespace-nowrap';
+const control = 'rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-sm outline-none focus:border-primary';
 
 function Invoices() {
   const [q, setQ] = useState('');
@@ -33,15 +33,15 @@ function Invoices() {
         <label className="flex items-center gap-1.5 text-sm text-slate-600">From <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={control} /></label>
         <label className="flex items-center gap-1.5 text-sm text-slate-600">To <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className={control} /></label>
       </div>
-      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto rounded-2xl border border-line bg-white">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left"><tr><th className={th}>Invoice</th><th className={th}>Date</th><th className={th}>Customer</th><th className={th}>Ticket</th><th className={th}>Quotation</th><th className={th}>Issued by</th><th className={`${th} text-right`}>Total</th><th className={th} /></tr></thead>
+          <thead className="bg-canvas text-left"><tr><th className={th}>Invoice</th><th className={th}>Date</th><th className={th}>Customer</th><th className={th}>Ticket</th><th className={th}>Quotation</th><th className={th}>Issued by</th><th className={`${th} text-right`}>Total</th><th className={th} /></tr></thead>
           <tbody>
             {list.isLoading && <tr><td colSpan={8} className="p-4"><div className="h-8 animate-pulse rounded bg-slate-100" /></td></tr>}
             {list.isError && <tr><td colSpan={8} className="p-4 text-red-700">{(list.error as Error).message}</td></tr>}
-            {list.isSuccess && rows.length === 0 && <tr><td colSpan={8} className="p-8 text-center text-slate-500">No invoices yet. Create one from a solved ticket on the Dispatch board.</td></tr>}
+            {list.isSuccess && rows.length === 0 && <tr><td colSpan={8} className="p-8 text-center text-muted">No invoices yet. Create one from a solved ticket on the Dispatch board.</td></tr>}
             {rows.map((i) => (
-              <tr key={i.id} className="border-t border-slate-100 hover:bg-slate-50">
+              <tr key={i.id} className="border-t border-slate-100 hover:bg-canvas">
                 <td className="p-3 font-mono font-semibold">{i.invoiceNo}</td>
                 <td className="whitespace-nowrap p-3 text-slate-600">{formatDay(i.issuedAt)}</td>
                 <td className="p-3 font-semibold">{i.customerName}</td>
@@ -53,7 +53,7 @@ function Invoices() {
               </tr>
             ))}
           </tbody>
-          {rows.length > 0 && <tfoot className="border-t border-slate-200 bg-slate-50 font-bold"><tr><td colSpan={6} className="p-3 text-right">Total ({rows.length})</td><td className="p-3 text-right tabular-nums">{formatINR(total)}</td><td /></tr></tfoot>}
+          {rows.length > 0 && <tfoot className="border-t border-line bg-canvas font-bold"><tr><td colSpan={6} className="p-3 text-right">Total ({rows.length})</td><td className="p-3 text-right tabular-nums">{formatINR(total)}</td><td /></tr></tfoot>}
         </table>
       </div>
     </main>

@@ -6,7 +6,7 @@ import type {
 import { todayIST } from './format';
 
 // The API server. For a phone build (APK) this must be the public https address of your API.
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api';
+const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'https://fsm-app.onrender.com/api';
 
 export class ApiError extends Error {
   constructor(public status: number, message: string, public details?: unknown) {
@@ -16,32 +16,26 @@ export class ApiError extends Error {
 
 /** Who is signed in (kept in the browser so each employee gets their own window). */
 export const session = {
-  set(token: string, user: { id: string; name: string; role: string }) {
+  set(token: string, user: { id: string; name: string; role: string; email?: string }) {
     window.localStorage.setItem('fsm_token', token);
     window.localStorage.setItem('fsm_uid', user.id);
+    if (user.email) window.localStorage.setItem('fsm_email', user.email);
     window.localStorage.setItem('fsm_role', user.role);
     window.localStorage.setItem('fsm_name', user.name);
   },
   clear() {
-    for (const k of ['fsm_token', 'fsm_uid', 'fsm_role', 'fsm_name']) window.localStorage.removeItem(k);
+    for (const k of ['fsm_token', 'fsm_uid', 'fsm_role', 'fsm_name', 'fsm_email']) window.localStorage.removeItem(k);
   },
   id: () => window.localStorage.getItem('fsm_uid'),
   role: () => window.localStorage.getItem('fsm_role'),
   name: () => window.localStorage.getItem('fsm_name'),
+  email: () => window.localStorage.getItem('fsm_email'),
 };
 
 async function http<T>(path: string, init: RequestInit = {}): Promise<T> {
   // TODO (production): short-lived access token in memory + httpOnly refresh cookie instead of localStorage.
+  // Public endpoints (/public/*) work without a token; it is simply not needed there.
   const token = typeof window !== 'undefined' ? window.localStorage.getItem('fsm_token') : null;
-  const isPublic = path.startsWith('/public/') || path.startsWith('/auth/login');
-  const onLogin = typeof window !== 'undefined' && window.location.pathname.startsWith('/login');
-
-  // Not signed in: go to the login screen instead of sending a request that is sure to fail with 401.
-  if (!token && !isPublic && typeof window !== 'undefined') {
-    if (!onLogin) window.location.replace('/login/');
-    throw new ApiError(401, 'Not signed in');
-  }
-
   const res = await fetch(`${BASE}${path}`, {
     ...init,
     headers: {
@@ -51,9 +45,9 @@ async function http<T>(path: string, init: RequestInit = {}): Promise<T> {
     },
   });
   if (!res.ok) {
-    if (res.status === 401 && typeof window !== 'undefined' && !isPublic) {
+    if (res.status === 401 && typeof window !== 'undefined' && !path.startsWith('/auth/login') && !path.startsWith('/public/')) {
       session.clear();
-      if (!onLogin) window.location.replace('/login/'); // trailing slash: works in the Capacitor APK and on Render
+      window.location.href = '/login';
     }
     const body = await res.json().catch(() => ({}));
     throw new ApiError(res.status, body.error ?? res.statusText, body.details);

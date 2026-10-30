@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 import { PRIORITY_LABEL } from '@/lib/format';
 import type { TechnicianStats, Ticket } from '@/lib/types';
 
-const select = 'min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-sm outline-none focus:border-slate-900';
+const select = 'min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-sm outline-none focus:border-primary';
 
 /** Technician picker + priority + Assign (or Reassign before the technician checks in). */
 export function AssignControl({ ticket, technicians }: { ticket: Ticket; technicians: TechnicianStats[] }) {
@@ -36,7 +36,7 @@ export function AssignControl({ ticket, technicians }: { ticket: Ticket; technic
           <option value="">Choose technician…</option>
           {technicians.map((t) => <option key={t.id} value={t.id}>{t.name} · {t.activeTickets} open</option>)}
         </select>
-        <select aria-label="Priority" value={priority} onChange={(e) => setPriority(Number(e.target.value) as 1 | 2 | 3)} className="w-24 rounded-xl border border-slate-300 bg-white px-2 py-2 text-sm outline-none focus:border-slate-900">
+        <select aria-label="Priority" value={priority} onChange={(e) => setPriority(Number(e.target.value) as 1 | 2 | 3)} className="w-24 rounded-xl border border-slate-300 bg-white px-2 py-2 text-sm outline-none focus:border-primary">
           {([1, 2, 3] as const).map((p) => <option key={p} value={p}>{PRIORITY_LABEL[p]}</option>)}
         </select>
       </div>
@@ -44,12 +44,12 @@ export function AssignControl({ ticket, technicians }: { ticket: Ticket; technic
         <button
           onClick={() => { const reason = window.prompt('Why are you cancelling this ticket? (e.g. duplicate, spam)'); if (reason && reason.trim().length >= 3) cancel.mutate(reason.trim()); }}
           disabled={cancel.isPending || assign.isPending}
-          className="text-xs font-semibold text-slate-500 underline-offset-2 hover:text-red-700 hover:underline disabled:opacity-50"
+          className="text-xs font-semibold text-muted underline-offset-2 hover:text-red-700 hover:underline disabled:opacity-50"
         >
           Cancel ticket
         </button>
         <button onClick={() => assign.mutate()} disabled={!techId || unchanged || assign.isPending || cancel.isPending}
-          className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-800 disabled:opacity-40">
+          className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary-dark disabled:opacity-40">
           {assign.isPending && <Loader2 className="h-4 w-4 animate-spin" />} {isNew ? 'Assign' : 'Reassign'}
         </button>
       </div>

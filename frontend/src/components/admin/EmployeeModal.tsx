@@ -57,7 +57,7 @@ export function EmployeeModal({ employee, isSelf, onClose }: { employee?: Employ
         <Field label={employee ? 'Reset password (leave empty to keep)' : 'Initial password'} hint="At least 10 characters. Share it with the employee; they can be given a new one any time.">
           <div className="flex gap-2">
             <input type="text" autoComplete="off" required={!employee} minLength={employee && !password ? undefined : 10} value={password} onChange={(e) => setPassword(e.target.value)} className={`${inputCls} font-mono`} />
-            <button type="button" onClick={() => setPassword(randomPassword())} className="shrink-0 rounded-xl border border-slate-300 px-3 text-sm font-semibold hover:bg-slate-50">Generate</button>
+            <button type="button" onClick={() => setPassword(randomPassword())} className="shrink-0 rounded-xl border border-slate-300 px-3 text-sm font-semibold hover:bg-canvas">Generate</button>
           </div>
         </Field>
 
@@ -71,8 +71,8 @@ export function EmployeeModal({ employee, isSelf, onClose }: { employee?: Employ
         {save.isError && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-800">{(save.error as Error).message}</p>}
 
         <div className="flex justify-end gap-2 pt-2">
-          <button type="button" onClick={onClose} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Cancel</button>
-          <button type="submit" disabled={save.isPending} className="flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white hover:bg-slate-800 disabled:opacity-50">
+          <button type="button" onClick={onClose} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-canvas">Cancel</button>
+          <button type="submit" disabled={save.isPending} className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-primary-dark disabled:opacity-50">
             {save.isPending && <Loader2 className="h-4 w-4 animate-spin" />} {employee ? 'Save' : 'Create employee'}
           </button>
         </div>

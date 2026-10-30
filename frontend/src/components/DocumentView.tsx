@@ -14,7 +14,7 @@ export function DocumentView({ doc, children }: { doc: DocumentData; children?: 
   const interState = doc.igstPaise > 0;
 
   return (
-    <article className="mx-auto w-full max-w-[210mm] rounded-2xl bg-white p-6 text-sm text-slate-900 shadow-sm ring-1 ring-slate-200 print:max-w-none print:rounded-none print:p-0 print:shadow-none print:ring-0 sm:p-10">
+    <article className="mx-auto w-full max-w-[210mm] rounded-2xl bg-white p-6 text-sm text-ink shadow-sm ring-1 ring-line print:max-w-none print:rounded-none print:p-0 print:shadow-none print:ring-0 sm:p-10">
       <header className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-slate-900 pb-4">
         <div className="min-w-0">
           <h1 className="text-xl font-bold">{s.name}</h1>
@@ -37,7 +37,7 @@ export function DocumentView({ doc, children }: { doc: DocumentData; children?: 
 
       <section className="mt-4 grid gap-4 sm:grid-cols-2">
         <div>
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Bill to</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">Bill to</h2>
           <p className="mt-1 font-bold">{c.name}</p>
           {c.contactName && <p>Attn: {c.contactName}</p>}
           <p className="text-slate-600">{c.address}{c.city ? `, ${c.city}` : ''}</p>
@@ -46,20 +46,20 @@ export function DocumentView({ doc, children }: { doc: DocumentData; children?: 
           <p className="text-slate-600">Place of supply: state code {doc.placeOfSupply}</p>
         </div>
         <div>
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Service details</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">Service details</h2>
           <dl className="mt-1 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5">
-            {doc.ticket.product && <><dt className="text-slate-500">Product</dt><dd className="font-semibold">{doc.ticket.product}</dd></>}
-            {doc.ticket.serial && <><dt className="text-slate-500">Serial no.</dt><dd className="font-mono">{doc.ticket.serial}</dd></>}
-            {doc.ticket.service && <><dt className="text-slate-500">Service</dt><dd>{doc.ticket.service}</dd></>}
-            {doc.warranty && <><dt className="text-slate-500">Warranty</dt><dd>{WARRANTY_TEXT[doc.warranty.status] ?? doc.warranty.status}{doc.warranty.endDate ? ` (until ${formatDay(`${doc.warranty.endDate}T00:00:00+05:30`)})` : ''}</dd></>}
-            {doc.ticket.technician && <><dt className="text-slate-500">Technician</dt><dd>{doc.ticket.technician}</dd></>}
+            {doc.ticket.product && <><dt className="text-muted">Product</dt><dd className="font-semibold">{doc.ticket.product}</dd></>}
+            {doc.ticket.serial && <><dt className="text-muted">Serial no.</dt><dd className="font-mono">{doc.ticket.serial}</dd></>}
+            {doc.ticket.service && <><dt className="text-muted">Service</dt><dd>{doc.ticket.service}</dd></>}
+            {doc.warranty && <><dt className="text-muted">Warranty</dt><dd>{WARRANTY_TEXT[doc.warranty.status] ?? doc.warranty.status}{doc.warranty.endDate ? ` (until ${formatDay(`${doc.warranty.endDate}T00:00:00+05:30`)})` : ''}</dd></>}
+            {doc.ticket.technician && <><dt className="text-muted">Technician</dt><dd>{doc.ticket.technician}</dd></>}
           </dl>
         </div>
       </section>
 
       {doc.ticket.solution && (
-        <section className="mt-4 rounded-xl bg-slate-50 p-3 print:border print:border-slate-300 print:bg-white">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Work done / solution</h2>
+        <section className="mt-4 rounded-xl bg-canvas p-3 print:border print:border-slate-300 print:bg-white">
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">Work done / solution</h2>
           <p className="mt-1 whitespace-pre-line">{doc.ticket.solution}</p>
         </section>
       )}
@@ -73,9 +73,9 @@ export function DocumentView({ doc, children }: { doc: DocumentData; children?: 
             </tr>
           </thead>
           <tbody>
-            {doc.lines.length === 0 && <tr><td colSpan={7} className="p-3 text-slate-500">No charges: no parts or services were needed.</td></tr>}
+            {doc.lines.length === 0 && <tr><td colSpan={7} className="p-3 text-muted">No charges: no parts or services were needed.</td></tr>}
             {doc.lines.map((l, i) => (
-              <tr key={i} className="border-b border-slate-200">
+              <tr key={i} className="border-b border-line">
                 <td className="p-2 align-top">{i + 1}</td>
                 <td className="p-2 align-top">{l.description}{l.warrantyWaived && <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-800 print:border print:border-emerald-700 print:bg-white">Covered by warranty</span>}</td>
                 <td className="p-2 align-top font-mono text-xs">{l.hsnSac ?? ''}</td>
@@ -90,7 +90,7 @@ export function DocumentView({ doc, children }: { doc: DocumentData; children?: 
       </div>
 
       <section className="mt-4 flex flex-wrap items-start justify-between gap-4">
-        <p className="max-w-sm text-slate-600"><span className="font-semibold text-slate-900">Amount in words:</span> {amountInWords(doc.totalPaise)}</p>
+        <p className="max-w-sm text-slate-600"><span className="font-semibold text-ink">Amount in words:</span> {amountInWords(doc.totalPaise)}</p>
         <table className="w-full max-w-xs text-sm">
           <tbody>
             <Row label="Subtotal" paise={doc.subtotalPaise} />
@@ -101,12 +101,12 @@ export function DocumentView({ doc, children }: { doc: DocumentData; children?: 
       </section>
 
       {doc.decision && !isInvoice && (
-        <p className="mt-4 rounded-xl bg-slate-50 p-3 text-slate-700 print:border print:border-slate-300 print:bg-white">
+        <p className="mt-4 rounded-xl bg-canvas p-3 text-slate-700 print:border print:border-slate-300 print:bg-white">
           <span className="font-semibold">{DECISION_TEXT[doc.status] ?? doc.status}</span> on {formatDay(doc.decision.at)}.{doc.decision.note ? ` ${doc.decision.note}` : ''}
         </p>
       )}
 
-      <footer className="mt-10 flex items-end justify-between gap-6 text-xs text-slate-500">
+      <footer className="mt-10 flex items-end justify-between gap-6 text-xs text-muted">
         <p className="max-w-md">
           {isInvoice
             ? 'This is a computer-generated tax invoice. Thank you for your business.'
